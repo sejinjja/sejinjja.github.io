@@ -2,5 +2,15 @@
 <head></head>
 <body>
 <a href="timer">timer</a>
+  <script>
+  
+fetch('https://asia-northeast3-study-170321.cloudfunctions.net/mylist')
+    .then(function (response) {
+        return response.json();
+    })
+    .then(function (myJson) {
+        console.log(myJson);
+    });
+  </script>
 </body>
 </html>

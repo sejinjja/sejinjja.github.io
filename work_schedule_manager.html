@@ -6,6 +6,7 @@
     <title>근무 스케줄 관리</title>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
     <style>
         .table-cell {
             min-width: 60px;
@@ -115,6 +116,13 @@
                     </tbody>
                 </table>
             </div>
+            <button
+                @click="downloadExcel"
+                class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+            >
+                엑셀 다운로드
+            </button>
+
 
             <div class="mt-6 text-sm text-gray-600">
                 <h3 class="font-bold mb-2">규칙 안내:</h3>
@@ -312,6 +320,33 @@
                     }
                 };
 
+                const downloadExcel = () => {
+                    const days = getDaysArray();
+
+                    // 헤더: 직원명 + 날짜들
+                    const header = ['직원명', ...days.map(d => `${d}일`)];
+
+                    // 데이터: 직원별 근무 스케줄
+                    const data = employees.value.map(emp => {
+                        const row = [emp.name];
+                        days.forEach(day => {
+                            row.push(getSchedule(emp.id, day)); // D / E / N / O 값
+                        });
+                        return row;
+                    });
+
+                    // 워크시트 생성
+                    const ws = XLSX.utils.aoa_to_sheet([header, ...data]);
+
+                    // 워크북 생성
+                    const wb = XLSX.utils.book_new();
+                    XLSX.utils.book_append_sheet(wb, ws, "근무표");
+
+                    // 파일 다운로드
+                    XLSX.writeFile(wb, `work-schedule-${currentMonth.value}.xlsx`);
+                };
+
+
                 onMounted(() => {
                     loadSchedules();
                 });
@@ -337,7 +372,8 @@
                     checkSeniorPresence,
                     changeMonth,
                     addEmployee,
-                    removeEmployee
+                    removeEmployee,
+                    downloadExcel,
                 };
             }
         }).mount('#app');

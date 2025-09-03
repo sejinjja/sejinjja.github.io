@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>근무 스케줄 관리</title>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .table-cell {
+            min-width: 60px;
+        }
+        .employee-name {
+            min-width: 120px;
+        }
+        .validation-error {
+            border-color: #ef4444 !important;
+            background-color: #fef2f2 !important;
+        }
+        .holiday-bg {
+            background-color: #f3f4f6;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <div class="p-6 max-w-full overflow-x-auto">
+            <div class="mb-6">
+                <h1 class="text-3xl font-bold mb-4">근무 스케줄 관리</h1>
+                
+                <div class="flex items-center gap-4 mb-4">
+                    <label for="monthSelect" class="font-medium">월 선택:</label>
+                    <input
+                        id="monthSelect"
+                        type="month"
+                        min="2025-01"
+                        :value="currentMonth"
+                        @change="changeMonth"
+                        class="border rounded px-3 py-2"
+                    />
+                    
+                    <button
+                        @click="addEmployee"
+                        class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                    >
+                        직원 추가
+                    </button>
+                </div>
+
+                <div class="flex gap-2 mb-4 text-sm">
+                    <span v-for="(type, key) in shiftTypes" :key="key" :class="['px-2 py-1 rounded', type.color]">
+                        {{ key }}: {{ type.label }}
+                    </span>
+                </div>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="w-full border-collapse border border-gray-300 text-sm">
+                    <thead>
+                        <tr class="bg-gray-100">
+                            <th class="border border-gray-300 p-2 employee-name">직원명</th>
+                            <th
+                                v-for="day in getDaysArray()"
+                                :key="day"
+                                :class="['border border-gray-300 p-1 table-cell', { 'holiday-bg': isHoliday(day) }]"
+                            >
+                                <div>{{ day }}</div>
+                                <div class="text-xs text-gray-600">
+                                    {{ getDayOfWeekName(day) }}
+                                </div>
+                            </th>
+                            <th class="border border-gray-300 p-2">액션</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="employee in employees" :key="employee.id">
+                            <td class="border border-gray-300 p-2 font-medium">
+                                <div class="flex items-center gap-2">
+                                    <span :class="['px-2 py-1 rounded text-xs', employee.type === 'senior' ? 'bg-orange-100 text-orange-800' : 'bg-cyan-100 text-cyan-800']">
+                                        {{ employee.type === 'senior' ? '선임' : '신입' }}
+                                    </span>
+                                    <span>{{ employee.name }}</span>
+                                </div>
+                            </td>
+                            <td
+                                v-for="day in getDaysArray()"
+                                :key="day"
+                                :class="['border border-gray-300 p-1', { 'holiday-bg': isHoliday(day) }]"
+                            >
+                                <select
+                                    :value="getSchedule(employee.id, day)"
+                                    @change="handleScheduleChange(employee.id, day, $event.target.value)"
+                                    :class="['w-full p-1 text-xs border rounded', { 'validation-error': hasValidationError(employee.id, day) }]"
+                                    :title="getValidationErrors(employee.id, day).join(', ')"
+                                >
+                                    <option value="">-</option>
+                                    <option value="D">D</option>
+                                    <option value="E">E</option>
+                                    <option value="N">N</option>
+                                    <option value="O">O</option>
+                                </select>
+                                <div v-if="!checkSeniorPresence(day, getSchedule(employee.id, day)) && getSchedule(employee.id, day) && getSchedule(employee.id, day) !== 'O'" class="text-xs text-red-600 mt-1">
+                                    선임 부재
+                                </div>
+                            </td>
+                            <td class="border border-gray-300 p-2">
+                                <button
+                                    @click="removeEmployee(employee.id)"
+                                    class="bg-red-500 text-white px-2 py-1 rounded text-xs hover:bg-red-600"
+                                >
+                                    삭제
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="mt-6 text-sm text-gray-600">
+                <h3 class="font-bold mb-2">규칙 안내:</h3>
+                <ul class="space-y-1">
+                    <li>• 5일 연속 근무 불가</li>
+                    <li>• 휴일(O) 다음날은 주간(D) 근무 불가</li>
+                    <li>• 오후(E) 근무 후 주간(D) 근무 불가</li>
+                    <li>• 동일 시간대에는 선임이 최소 1명 필요</li>
+                    <li>• 공휴일과 일요일은 회색 배경으로 표시</li>
+                    <li>• 규칙 위반 시 빨간색 테두리로 표시</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const { createApp, ref, reactive, computed, onMounted, watch } = Vue;
+
+        createApp({
+            setup() {
+                const getCurrentMonth = () => {
+                    const now = new Date();
+                    const year = now.getFullYear();
+                    const month = String(now.getMonth() + 1).padStart(2, '0');
+                    return `${year}-${month}`;
+                };
+
+                const currentMonth = ref(getCurrentMonth());
+                const employees = ref([]);
+                const schedules = ref({});
+
+                const shiftTypes = {
+                    'D': { label: '주간', color: 'bg-blue-100 text-blue-800' },
+                    'E': { label: '오후', color: 'bg-green-100 text-green-800' },
+                    'N': { label: '저녁', color: 'bg-purple-100 text-purple-800' },
+                    'O': { label: '휴일', color: 'bg-gray-100 text-gray-800' }
+                };
+
+                const getStorageKey = (month) => `work-schedule-${month}`;
+
+                const getDaysInMonth = () => {
+                    const [year, month] = currentMonth.value.split('-');
+                    return new Date(parseInt(year), parseInt(month), 0).getDate();
+                };
+
+                const getDaysArray = () => {
+                    return Array.from({ length: getDaysInMonth() }, (_, i) => i + 1);
+                };
+
+                const getDayOfWeek = (day) => {
+                    const [year, month] = currentMonth.value.split('-');
+                    return new Date(parseInt(year), parseInt(month) - 1, day).getDay();
+                };
+
+                const getDayOfWeekName = (day) => {
+                    const dayNames = ['일', '월', '화', '수', '목', '금', '토'];
+                    return dayNames[getDayOfWeek(day)];
+                };
+
+                const isHoliday = (day) => {
+                    const dateStr = `${currentMonth.value}-${day.toString().padStart(2, '0')}`;
+                    return getDayOfWeek(day) === 0 || getDayOfWeek(day) === 6;
+                };
+
+                const loadSchedules = () => {
+                    const key = getStorageKey(currentMonth.value);                    
+                    try{
+                        schedules.value = JSON.parse(localStorage.getItem(key)) || {};
+                    } catch(e) {
+                        schedules.value = {};
+                    }
+                };
+
+                const saveSchedules = () => {
+                    const key = getStorageKey(currentMonth.value);
+                    localStorage.setItem(key, JSON.stringify(schedules.value))
+                };
+
+                const saveEmployee = () => {
+                    localStorage.setItem(`work-schedule-employee`, JSON.stringify(employees.value))
+                }
+
+                const loadEmployee = () => {
+                    try{
+                        employees.value = JSON.parse(localStorage.getItem(`work-schedule-employee`)) || [];
+                    } catch(e) {
+                        employees.value = [];
+                    }
+                }
+
+                const getSchedule = (employeeId, day) => {
+                    return schedules.value[`${employeeId}-${day}`] || '';
+                };
+
+                const handleScheduleChange = (employeeId, day, shift) => {
+                    const key = `${employeeId}-${day}`;
+                    
+                    if (shift === '') {
+                        delete schedules.value[key];
+                    } else {
+                        schedules.value[key] = shift;
+                    }
+                    
+                    saveSchedules();
+                };
+
+                const checkConsecutiveWork = (employeeId, day) => {
+                    let consecutiveDays = 0;
+                    for (let i = day - 4; i <= day; i++) {
+                        if (i > 0) {
+                            const schedule = getSchedule(employeeId, i);
+                            if (schedule && schedule !== 'O') {
+                                consecutiveDays++;
+                            } else {
+                                consecutiveDays = 0;
+                            }
+                        }
+                    }
+                    return consecutiveDays >= 5;
+                };
+
+                const checkHolidayNextDay = (employeeId, day, shift) => {
+                    if (shift !== 'D' || day <= 1) return false;
+                    const prevSchedule = getSchedule(employeeId, day - 1);
+                    return prevSchedule === 'O';
+                };
+
+                const checkEAfterD = (employeeId, day, shift) => {
+                    if (shift !== 'D' || day <= 1) return false;
+                    const prevSchedule = getSchedule(employeeId, day - 1);
+                    return prevSchedule === 'E';
+                };
+
+                const checkSeniorPresence = (day, shift) => {
+                    if (!shift || shift === 'O') return true;
+                    
+                    const seniors = employees.value.filter(emp => emp.type === 'senior');
+                    const hasSenior = seniors.some(senior => getSchedule(senior.id, day) === shift);
+                    return hasSenior;
+                };
+
+                const getValidationErrors = (employeeId, day) => {
+                    const currentSchedule = getSchedule(employeeId, day);
+                    const errors = [];
+                    
+                    if (checkConsecutiveWork(employeeId, day)) {
+                        errors.push('5일 연속 근무 불가');
+                    }
+                    
+                    if (checkHolidayNextDay(employeeId, day, currentSchedule)) {
+                        errors.push('휴일 다음날 D 근무 불가');
+                    }
+                    
+                    if (checkEAfterD(employeeId, day, currentSchedule)) {
+                        errors.push('E 근무 후 D 근무 불가');
+                    }
+                    
+                    return errors;
+                };
+
+                const hasValidationError = (employeeId, day) => {
+                    return getValidationErrors(employeeId, day).length > 0;
+                };
+
+                const changeMonth = (event) => {
+                    currentMonth.value = event.target.value;
+                    loadSchedules();
+                };
+
+                const addEmployee = () => {
+                    const name = prompt('직원 이름을 입력하세요:');
+                    if (name) {
+                        const type = confirm('선임입니까? (확인: 선임, 취소: 신입)') ? 'senior' : 'junior';
+                        const newEmployee = {
+                            id: Date.now(),
+                            name,
+                            type
+                        };
+                        employees.value.push(newEmployee);
+                        saveEmployee();
+                    }
+                };
+
+                const removeEmployee = (employeeId) => {
+                    if (confirm('정말 삭제하시겠습니까?')) {
+                        employees.value = employees.value.filter(emp => emp.id !== employeeId);
+                        
+                        Object.keys(schedules.value).forEach(key => {
+                            if (key.startsWith(`${employeeId}-`)) {
+                                delete schedules.value[key];
+                            }
+                        });
+                        saveSchedules();
+                        saveEmployee();
+                    }
+                };
+
+                onMounted(() => {
+                    loadSchedules();
+                });
+
+                watch(currentMonth, () => {
+                    loadSchedules();
+                });
+
+                loadEmployee();
+
+                return {
+                    currentMonth,
+                    employees,
+                    schedules,
+                    shiftTypes,
+                    getDaysArray,
+                    getDayOfWeekName,
+                    isHoliday,
+                    getSchedule,
+                    handleScheduleChange,
+                    getValidationErrors,
+                    hasValidationError,
+                    checkSeniorPresence,
+                    changeMonth,
+                    addEmployee,
+                    removeEmployee
+                };
+            }
+        }).mount('#app');
+    </script>
+</body>
+</html>

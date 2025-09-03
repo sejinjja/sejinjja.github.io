@@ -136,7 +136,7 @@
             <div class="mt-6 text-sm text-gray-600">
                 <h3 class="font-bold mb-2">규칙 안내:</h3>
                 <ul class="space-y-1">
-                    <li>• 5일 연속 근무 불가</li>
+                    <li>• 6일 연속 근무 불가</li>
                     <li>• 휴일(O) 다음날은 주간(D) 근무 불가</li>
                     <li>• 오후(E) 근무 후 주간(D) 근무 불가</li>
                     <li>• 동일 시간대에는 선임이 최소 1명 필요</li>
@@ -240,7 +240,7 @@
 
                 const checkConsecutiveWork = (employeeId, day) => {
                     let consecutiveDays = 0;
-                    for (let i = day - 4; i <= day; i++) {
+                    for (let i = day - 5; i <= day; i++) {
                         if (i > 0) {
                             const schedule = getSchedule(employeeId, i);
                             if (schedule && schedule !== 'O') {
@@ -250,7 +250,7 @@
                             }
                         }
                     }
-                    return consecutiveDays >= 5;
+                    return consecutiveDays >= 6;
                 };
 
                 const checkHolidayNextDay = (employeeId, day, shift) => {
@@ -278,7 +278,7 @@
                     const errors = [];
                     
                     if (checkConsecutiveWork(employeeId, day)) {
-                        errors.push('5일 연속 근무 불가');
+                        errors.push('6일 연속 근무 불가');
                     }
                     
                     if (checkHolidayNextDay(employeeId, day, currentSchedule)) {

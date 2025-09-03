@@ -1,0 +1,13 @@
+{
+  "name": "근무 스케줄 매니저",
+  "short_name": "스케줄",
+  "start_url": "/work_schedule_manager.html",
+  "display": "standalone",
+  "icons": [
+    {
+      "src": "/icons/work-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    }
+  ]
+}

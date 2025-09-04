@@ -336,13 +336,29 @@
                 };
 
                 const downloadExcel = () => {
-                    const wb = XLSX.utils.book_new();
                     const days = getDaysArray();
-                    const header = ['직원명', ...days];
-                    const data = employees.value.map(emp => [emp.name, ...days.map(d => getSchedule(emp.id, d))]);
+
+                    // 헤더: 직원명 + 날짜들
+                    const header = ['직원명', ...days.map(d => `${d}일`)];
+
+                    // 데이터: 직원별 근무 스케줄
+                    const data = employees.value.map(emp => {
+                        const row = [emp.name];
+                        days.forEach(day => {
+                            row.push(getSchedule(emp.id, day)); // D / E / N / O 값
+                        });
+                        return row;
+                    });
+
+                    // 워크시트 생성
                     const ws = XLSX.utils.aoa_to_sheet([header, ...data]);
-                    XLSX.utils.book_append_sheet(wb, ws, '근무스케줄');
-                    XLSX.writeFile(wb, `work_schedule_${currentMonth.value}.xlsx`);
+
+                    // 워크북 생성
+                    const wb = XLSX.utils.book_new();
+                    XLSX.utils.book_append_sheet(wb, ws, "근무표");
+
+                    // 파일 다운로드
+                    XLSX.writeFile(wb, `work-schedule-${currentMonth.value}.xlsx`);
                 };
 
                 const uploadExcel = (e) => {
@@ -360,19 +376,21 @@
 
                         const daysInTable = rows[0].slice(1);
                         if (daysInTable.length !== getDaysInMonth()) {
-                            if (!confirm("엑셀의 날짜 수가 현재 달과 다릅니다. 계속 진행하시겠습니까?")) return;
+                            if (!confirm("엑셀의 날짜 수가 현재 달과 다릅니다. 계속 진행하시겠습니까?")) return e.target.value = null;
                         }
 
                         const employeeCountMismatch = rows.length - 1 !== employees.value.length;
                         if (employeeCountMismatch) {
-                            if (!confirm("엑셀의 직원 수가 현재 직원 수와 다릅니다. 계속 진행하시겠습니까?")) return     e.target.value = null;
+                            if (!confirm("엑셀의 직원 수가 현재 직원 수와 다릅니다. 계속 진행하시겠습니까?")) return e.target.value = null;
                         }
+
+                        schedules.value = {};
 
                         rows.slice(1).forEach((row, idx) => {
                             const emp = employees.value[idx];
-                            daysInTable.forEach((day, i) => {
+                            if(emp) daysInTable.forEach((day, i) => {
                                 const shift = row[i + 1];
-                                if (shift) schedules.value[`${emp.id}-${day}`] = shift;
+                                if (shift) schedules.value[`${emp.id}-${i + 1}`] = shift;
                             });
                         });
                         saveSchedules();

@@ -9,19 +9,9 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
     <style>
-        .table-cell {
-            min-width: 60px;
-        }
-        .employee-name {
-            min-width: 120px;
-        }
-        .validation-error {
-            border-color: #ef4444 !important;
-            background-color: #fef2f2 !important;
-        }
-        .holiday-bg {
-            background-color: #f3f4f6;
-        }
+        .table-cell { min-width: 60px; }
+        .employee-name { min-width: 120px; }
+        .holiday-bg { background-color: #f3f4f6; }
     </style>
 </head>
 <body>
@@ -29,7 +19,6 @@
         <div class="p-6 max-w-full overflow-x-auto">
             <div class="mb-6">
                 <h1 class="text-3xl font-bold mb-4">근무 스케줄 관리</h1>
-                
                 <div class="flex items-center gap-4 mb-4">
                     <label for="monthSelect" class="font-medium">월 선택:</label>
                     <input
@@ -40,7 +29,6 @@
                         @change="changeMonth"
                         class="border rounded px-3 py-2"
                     />
-                    
                     <button
                         @click="addEmployee"
                         class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
@@ -48,7 +36,6 @@
                         직원 추가
                     </button>
                 </div>
-
                 <div class="flex gap-2 mb-4 text-sm">
                     <span v-for="(type, key) in shiftTypes" :key="key" :class="['px-2 py-1 rounded', type.color]">
                         {{ key }}: {{ type.label }}
@@ -67,9 +54,7 @@
                                 :class="['border border-gray-300 p-1 table-cell', { 'holiday-bg': isHoliday(day) }]"
                             >
                                 <div>{{ day }}</div>
-                                <div class="text-xs text-gray-600">
-                                    {{ getDayOfWeekName(day) }}
-                                </div>
+                                <div class="text-xs text-gray-600">{{ getDayOfWeekName(day) }}</div>
                             </th>
                             <th class="border border-gray-300 p-2">액션</th>
                         </tr>
@@ -92,7 +77,13 @@
                                 <select
                                     :value="getSchedule(employee.id, day)"
                                     @change="handleScheduleChange(employee.id, day, $event.target.value)"
-                                    :class="['w-full p-1 text-xs border rounded', { 'validation-error': hasValidationError(employee.id, day) }]"
+                                    :class="[
+    'w-full p-1 text-xs border rounded',
+    { 
+        'bg-red-200 border-red-500': hasValidationError(employee.id, day), // 빨간 배경 + 테두리
+        'bg-yellow-100': checkNightWarning(employee.id, day) && !hasValidationError(employee.id, day) // 노란 경고
+    }
+]"
                                     :title="getValidationErrors(employee.id, day).join(', ')"
                                 >
                                     <option value="">-</option>
@@ -117,20 +108,21 @@
                     </tbody>
                 </table>
             </div>
-            <div class="flex items-center gap-4 mb-4">
-            <button
-                @click="downloadExcel"
-                class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
-            >
-                엑셀 다운로드
-            </button>
-            <button
-                v-if="!isInstalled"
-                @click="install"
-                class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-            >
-                앱 설치
-            </button>
+
+            <div class="flex items-center gap-4 mb-4 mt-4">
+                <button
+                    @click="downloadExcel"
+                    class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+                >
+                    엑셀 다운로드
+                </button>
+                <button
+                    v-if="!isInstalled"
+                    @click="install"
+                    class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                >
+                    앱 설치
+                </button>
             </div>
 
             <div class="mt-6 text-sm text-gray-600">
@@ -150,7 +142,7 @@
     </div>
 
     <script>
-        const { createApp, ref, reactive, computed, onMounted, watch } = Vue;
+        const { createApp, ref, reactive, onMounted, watch } = Vue;
 
         createApp({
             setup() {
@@ -179,64 +171,37 @@
                     return new Date(parseInt(year), parseInt(month), 0).getDate();
                 };
 
-                const getDaysArray = () => {
-                    return Array.from({ length: getDaysInMonth() }, (_, i) => i + 1);
-                };
-
+                const getDaysArray = () => Array.from({ length: getDaysInMonth() }, (_, i) => i + 1);
                 const getDayOfWeek = (day) => {
                     const [year, month] = currentMonth.value.split('-');
                     return new Date(parseInt(year), parseInt(month) - 1, day).getDay();
                 };
-
-                const getDayOfWeekName = (day) => {
-                    const dayNames = ['일', '월', '화', '수', '목', '금', '토'];
-                    return dayNames[getDayOfWeek(day)];
-                };
-
-                const isHoliday = (day) => {
-                    const dateStr = `${currentMonth.value}-${day.toString().padStart(2, '0')}`;
-                    return getDayOfWeek(day) === 0 || getDayOfWeek(day) === 6;
-                };
+                const getDayOfWeekName = (day) => ['일', '월', '화', '수', '목', '금', '토'][getDayOfWeek(day)];
+                const isHoliday = (day) => getDayOfWeek(day) === 0 || getDayOfWeek(day) === 6;
 
                 const loadSchedules = () => {
-                    const key = getStorageKey(currentMonth.value);                    
-                    try{
-                        schedules.value = JSON.parse(localStorage.getItem(key)) || {};
-                    } catch(e) {
-                        schedules.value = {};
-                    }
+                    const key = getStorageKey(currentMonth.value);
+                    try { schedules.value = JSON.parse(localStorage.getItem(key)) || {}; } 
+                    catch(e) { schedules.value = {}; }
                 };
-
                 const saveSchedules = () => {
                     const key = getStorageKey(currentMonth.value);
-                    localStorage.setItem(key, JSON.stringify(schedules.value))
+                    localStorage.setItem(key, JSON.stringify(schedules.value));
                 };
 
                 const saveEmployee = () => {
-                    localStorage.setItem(`work-schedule-employee`, JSON.stringify(employees.value))
-                }
-
+                    localStorage.setItem(`work-schedule-employee`, JSON.stringify(employees.value));
+                };
                 const loadEmployee = () => {
-                    try{
-                        employees.value = JSON.parse(localStorage.getItem(`work-schedule-employee`)) || [];
-                    } catch(e) {
-                        employees.value = [];
-                    }
-                }
-
-                const getSchedule = (employeeId, day) => {
-                    return schedules.value[`${employeeId}-${day}`] || '';
+                    try { employees.value = JSON.parse(localStorage.getItem(`work-schedule-employee`)) || []; } 
+                    catch(e) { employees.value = []; }
                 };
 
+                const getSchedule = (employeeId, day) => schedules.value[`${employeeId}-${day}`] || '';
                 const handleScheduleChange = (employeeId, day, shift) => {
                     const key = `${employeeId}-${day}`;
-                    
-                    if (shift === '') {
-                        delete schedules.value[key];
-                    } else {
-                        schedules.value[key] = shift;
-                    }
-                    
+                    if (shift === '') delete schedules.value[key];
+                    else schedules.value[key] = shift;
                     saveSchedules();
                 };
 
@@ -245,224 +210,112 @@
                     for (let i = day - 5; i <= day; i++) {
                         if (i > 0) {
                             const schedule = getSchedule(employeeId, i);
-                            if (schedule && schedule !== 'O') {
-                                consecutiveDays++;
-                            } else {
-                                consecutiveDays = 0;
-                            }
+                            if (schedule && schedule !== 'O') consecutiveDays++;
+                            else consecutiveDays = 0;
                         }
                     }
                     return consecutiveDays >= 6;
                 };
-
-
                 const checkEAfterD = (employeeId, day, shift) => {
                     if (shift !== 'D' || day <= 1) return false;
-                    const prevSchedule = getSchedule(employeeId, day - 1);
-                    return prevSchedule === 'E';
+                    return getSchedule(employeeId, day - 1) === 'E';
                 };
-
-                // Night 근무 연속 3일 이상 체크
                 const checkConsecutiveNight = (employeeId, day) => {
-                    const currentSchedule = getSchedule(employeeId, day);
-                    if (currentSchedule !== 'N') return false;
-
-                    let consecutiveNights = 1; // 현재 날짜 포함
-                    
-                    // 현재 날짜 이전 체크
+                    if (getSchedule(employeeId, day) !== 'N') return false;
+                    let count = 1;
                     for (let i = day - 1; i > 0; i--) {
-                        const schedule = getSchedule(employeeId, i);
-                        if (schedule === 'N') {
-                            consecutiveNights++;
-                        } else {
-                            break;
-                        }
+                        if (getSchedule(employeeId, i) === 'N') count++;
+                        else break;
                     }
-                    
-                    return consecutiveNights > 2;
+                    return count > 2;
                 };
-
-                // Night 근무 후 2일 연속 휴무 체크
                 const checkNightOffRule = (employeeId, day) => {
                     const daysInMonth = getDaysInMonth();
-                    
-                    // Night 근무가 있는지 찾기
                     for (let i = 1; i <= day; i++) {
-                        const schedule = getSchedule(employeeId, i);
-                        if (schedule === 'N') {
-                            // Night 근무 후 연속으로 근무하는 날이 있는지 확인
-                            let nightEndDay = i;
-                            
-                            // 연속 Night 근무의 마지막 날 찾기
-                            while (nightEndDay + 1 <= daysInMonth && getSchedule(employeeId, nightEndDay + 1) === 'N') {
-                                nightEndDay++;
-                            }
-                            
-                            // Night 근무 후 2일 연속 휴무가 있는지 확인
-                            if (nightEndDay + 2 <= daysInMonth) {
-                                const day1After = getSchedule(employeeId, nightEndDay + 1);
-                                const day2After = getSchedule(employeeId, nightEndDay + 2);
-                                
-                                // 현재 체크하는 날짜가 Night 근무 후 2일 이내이고, 휴무가 아닌 경우
-                                if (day <= nightEndDay + 2 && day > nightEndDay) {
-                                    if (day1After !== 'O' || day2After !== 'O') {
-                                        return true; // 위반
-                                    }
+                        if (getSchedule(employeeId, i) === 'N') {
+                            let nightEnd = i;
+                            while (nightEnd + 1 <= daysInMonth && getSchedule(employeeId, nightEnd + 1) === 'N') nightEnd++;
+                            if (nightEnd + 2 <= daysInMonth) {
+                                const day1 = getSchedule(employeeId, nightEnd + 1);
+                                const day2 = getSchedule(employeeId, nightEnd + 2);
+                                if (day <= nightEnd + 2 && day > nightEnd) {
+                                    if (day1 !== 'O' || day2 !== 'O') return true;
                                 }
                             }
-                            
-                            // 다음 Night 근무를 찾기 위해 nightEndDay 이후부터 시작
-                            i = nightEndDay;
+                            i = nightEnd;
                         }
                     }
-                    
                     return false;
+                };
+
+                // 새 함수: Night(N) 근무 잠재적 위험 체크
+                const checkNightWarning = (employeeId, day) => {
+                    const schedule = getSchedule(employeeId, day);
+                    if (schedule !== 'N') return false;
+                    const daysInMonth = getDaysInMonth();
+                    // 연속 N 근무가 2일까지인 경우 이후 2일 O가 비어있으면 잠재 위험
+                    let nightEnd = day;
+                    while (nightEnd + 1 <= daysInMonth && getSchedule(employeeId, nightEnd + 1) === 'N') nightEnd++;
+                    const day1 = getSchedule(employeeId, nightEnd + 1);
+                    const day2 = getSchedule(employeeId, nightEnd + 2);
+                    return !(day1 === 'O' && day2 === 'O');
                 };
 
                 const checkSeniorPresence = (day, shift) => {
                     if (!shift || shift === 'O') return true;
-                    
-                    const seniors = employees.value.filter(emp => emp.type === 'senior');
-                    const hasSenior = seniors.some(senior => getSchedule(senior.id, day) === shift);
-                    return hasSenior;
+                    return employees.value.filter(e => e.type === 'senior').some(s => getSchedule(s.id, day) === shift);
                 };
 
                 const getValidationErrors = (employeeId, day) => {
-                    const currentSchedule = getSchedule(employeeId, day);
+                    const schedule = getSchedule(employeeId, day);
                     const errors = [];
-                    
-                    if (checkConsecutiveWork(employeeId, day)) {
-                        errors.push('6일 연속 근무 불가');
-                    }
-                    
-                    
-                    
-                    if (checkEAfterD(employeeId, day, currentSchedule)) {
-                        errors.push('E 근무 후 D 근무 불가');
-                    }
-                    
-                    if (checkConsecutiveNight(employeeId, day)) {
-                        errors.push('N 근무는 최대 연속 2일까지');
-                    }
-                    
-                    if (checkNightOffRule(employeeId, day)) {
-                        errors.push('N 근무 후 2일 연속 휴무 필요');
-                    }
-                    
+                    if (checkConsecutiveWork(employeeId, day)) errors.push('6일 연속 근무 불가');
+                    if (checkEAfterD(employeeId, day, schedule)) errors.push('E 근무 후 D 근무 불가');
+                    if (checkConsecutiveNight(employeeId, day)) errors.push('N 근무는 최대 연속 2일까지');
+                    if (checkNightOffRule(employeeId, day)) errors.push('N 근무 후 2일 연속 휴무 필요');
                     return errors;
                 };
+                const hasValidationError = (employeeId, day) => getValidationErrors(employeeId, day).length > 0;
 
-                const hasValidationError = (employeeId, day) => {
-                    return getValidationErrors(employeeId, day).length > 0;
-                };
-
-                const changeMonth = (event) => {
-                    currentMonth.value = event.target.value;
-                    loadSchedules();
-                };
-
+                const changeMonth = (e) => { currentMonth.value = e.target.value; loadSchedules(); };
                 const addEmployee = () => {
                     const name = prompt('직원 이름을 입력하세요:');
-                    if (name) {
-                        const type = confirm('선임입니까? (확인: 선임, 취소: 신입)') ? 'senior' : 'junior';
-                        const newEmployee = {
-                            id: Date.now(),
-                            name,
-                            type
-                        };
-                        employees.value.push(newEmployee);
-                        saveEmployee();
-                    }
+                    if (!name) return;
+                    const type = confirm('선임입니까? (확인: 선임, 취소: 신입)') ? 'senior' : 'junior';
+                    employees.value.push({ id: Date.now(), name, type });
+                    saveEmployee();
                 };
-
                 const removeEmployee = (employeeId) => {
-                    if (confirm('정말 삭제하시겠습니까?')) {
-                        employees.value = employees.value.filter(emp => emp.id !== employeeId);
-                        
-                        Object.keys(schedules.value).forEach(key => {
-                            if (key.startsWith(`${employeeId}-`)) {
-                                delete schedules.value[key];
-                            }
-                        });
-                        saveSchedules();
-                        saveEmployee();
-                    }
+                    if (!confirm('정말 삭제하시겠습니까?')) return;
+                    employees.value = employees.value.filter(e => e.id !== employeeId);
+                    Object.keys(schedules.value).forEach(k => { if (k.startsWith(`${employeeId}-`)) delete schedules.value[k]; });
+                    saveSchedules();
+                    saveEmployee();
                 };
-
                 const downloadExcel = () => {
                     const days = getDaysArray();
-
-                    // 헤더: 직원명 + 날짜들
                     const header = ['직원명', ...days.map(d => `${d}일`)];
-
-                    // 데이터: 직원별 근무 스케줄
-                    const data = employees.value.map(emp => {
-                        const row = [emp.name];
-                        days.forEach(day => {
-                            row.push(getSchedule(emp.id, day)); // D / E / N / O 값
-                        });
-                        return row;
-                    });
-
-                    // 워크시트 생성
+                    const data = employees.value.map(emp => [emp.name, ...days.map(d => getSchedule(emp.id, d))]);
                     const ws = XLSX.utils.aoa_to_sheet([header, ...data]);
-
-                    // 워크북 생성
                     const wb = XLSX.utils.book_new();
                     XLSX.utils.book_append_sheet(wb, ws, "근무표");
-
-                    // 파일 다운로드
                     XLSX.writeFile(wb, `work-schedule-${currentMonth.value}.xlsx`);
                 };
 
+                onMounted(() => { loadSchedules(); loadEmployee(); });
 
-                onMounted(() => {
-                    loadSchedules();
-                });
+                watch(currentMonth, () => { loadSchedules(); });
 
-                watch(currentMonth, () => {
-                    loadSchedules();
-                });
-
-                loadEmployee();
-
-                
                 let deferredPrompt;
-
-                window.addEventListener('beforeinstallprompt', (e) => {
-                    // 기본 설치 배너 막기
-                    e.preventDefault();
-                    deferredPrompt = e;
-                });
-
-                const install = async () => {
-                    if (!deferredPrompt) return;
-                    deferredPrompt.prompt(); // 설치 다이얼로그 띄우기
-                    const { outcome } = await deferredPrompt.userChoice;
-                    deferredPrompt = null;
-                }
-
+                window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferredPrompt = e; });
+                const install = async () => { if (!deferredPrompt) return; deferredPrompt.prompt(); await deferredPrompt.userChoice; deferredPrompt = null; }
                 const isInstalled = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
 
                 return {
-                    currentMonth,
-                    employees,
-                    schedules,
-                    shiftTypes,
-                    getDaysArray,
-                    getDayOfWeekName,
-                    isHoliday,
-                    getSchedule,
-                    handleScheduleChange,
-                    getValidationErrors,
-                    hasValidationError,
-                    checkSeniorPresence,
-                    changeMonth,
-                    addEmployee,
-                    removeEmployee,
-                    downloadExcel,
-                    install,
-                    isInstalled,
+                    currentMonth, employees, schedules, shiftTypes, getDaysArray, getDayOfWeekName, isHoliday,
+                    getSchedule, handleScheduleChange, getValidationErrors, hasValidationError, checkSeniorPresence,
+                    changeMonth, addEmployee, removeEmployee, downloadExcel, install, isInstalled,
+                    checkNightWarning
                 };
             }
         }).mount('#app');

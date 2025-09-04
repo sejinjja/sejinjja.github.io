@@ -135,7 +135,20 @@
                 >
                     엑셀 다운로드
                 </button>
-                <input type="file" accept=".xlsx,.xls" @change="uploadExcel" class="border p-1 rounded" />
+                    <!-- 업로드 버튼 -->
+    <label
+        for="uploadExcel"
+        class="bg-yellow-400 text-white px-4 py-2 rounded cursor-pointer hover:bg-yellow-500"
+    >
+        엑셀 업로드
+    </label>
+    <input
+        type="file"
+        id="uploadExcel"
+        accept=".xlsx, .xls"
+        @change="uploadExcel"
+        class="hidden"
+    />
                 <button
                     v-if="!isInstalled"
                     @click="install"
@@ -352,7 +365,7 @@
 
                         const employeeCountMismatch = rows.length - 1 !== employees.value.length;
                         if (employeeCountMismatch) {
-                            if (!confirm("엑셀의 직원 수가 현재 직원 수와 다릅니다. 계속 진행하시겠습니까?")) return;
+                            if (!confirm("엑셀의 직원 수가 현재 직원 수와 다릅니다. 계속 진행하시겠습니까?")) return     e.target.value = null;
                         }
 
                         rows.slice(1).forEach((row, idx) => {
@@ -364,6 +377,7 @@
                         });
                         saveSchedules();
                         alert("업로드 완료!");
+    e.target.value = null;
                     };
                     reader.readAsArrayBuffer(file);
                 };

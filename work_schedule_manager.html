@@ -103,7 +103,7 @@
                                     :value="getSchedule(employee.id, day)"
                                     @change="handleScheduleChange(employee.id, day, $event.target.value)"
                                     class="w-full p-1 text-xs border rounded"
-                                    :title="getValidationErrors(employee.id, day).join(', ')"
+                                    
                                 >
                                     <option value="">-</option>
                                     <option value="D">D</option>
@@ -111,8 +111,8 @@
                                     <option value="N">N</option>
                                     <option value="O">O</option>
                                 </select>
-                                <div v-if="!checkSeniorPresence(day, getSchedule(employee.id, day)) && getSchedule(employee.id, day) && getSchedule(employee.id, day) !== 'O'" class="text-xs text-red-600 mt-1">
-                                    선임 부재
+                                <div v-text="getValidationErrors(employee.id, day).join(', ')" class="text-xs text-red-600 mt-1">
+                                    
                                 </div>
                             </td>
                             <td class="border border-gray-300 p-2">

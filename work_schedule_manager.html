@@ -298,9 +298,7 @@
                 };
 
                 const hasValidationError = (employeeId, day) => {
-                    return checkConsecutiveWork(employeeId, day)
-                        || checkEAfterD(employeeId, day, getSchedule(employeeId, day))
-                        || !checkSeniorPresence(day, getSchedule(employeeId, day));
+                    return getValidationErrors(employeeId, day)?.length;
                 };
 
                 const getValidationErrors = (employeeId, day) => {

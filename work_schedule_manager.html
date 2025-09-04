@@ -140,6 +140,9 @@
                     <li>• 휴일(O) 다음날은 주간(D) 근무 불가</li>
                     <li>• 오후(E) 근무 후 주간(D) 근무 불가</li>
                     <li>• 동일 시간대에는 선임이 최소 1명 필요</li>
+                    <li>• Night(N) 근무는 최대 연속 2일까지 가능 (위반 시 빨간색)</li>
+                    <li>• Night(N) 근무 후에는 반드시 2일 연속 휴무(O) 필요 (위반 시 빨간색)</li>
+                    <li>• Night(N) 근무 관련 잠재적 위험은 노란색으로 경고 표시</li>
                     <li>• 공휴일과 일요일은 회색 배경으로 표시</li>
                     <li>• 규칙 위반 시 빨간색 테두리로 표시</li>
                 </ul>
@@ -265,6 +268,63 @@
                     return prevSchedule === 'E';
                 };
 
+                // Night 근무 연속 3일 이상 체크
+                const checkConsecutiveNight = (employeeId, day) => {
+                    const currentSchedule = getSchedule(employeeId, day);
+                    if (currentSchedule !== 'N') return false;
+
+                    let consecutiveNights = 1; // 현재 날짜 포함
+                    
+                    // 현재 날짜 이전 체크
+                    for (let i = day - 1; i > 0; i--) {
+                        const schedule = getSchedule(employeeId, i);
+                        if (schedule === 'N') {
+                            consecutiveNights++;
+                        } else {
+                            break;
+                        }
+                    }
+                    
+                    return consecutiveNights > 2;
+                };
+
+                // Night 근무 후 2일 연속 휴무 체크
+                const checkNightOffRule = (employeeId, day) => {
+                    const daysInMonth = getDaysInMonth();
+                    
+                    // Night 근무가 있는지 찾기
+                    for (let i = 1; i <= day; i++) {
+                        const schedule = getSchedule(employeeId, i);
+                        if (schedule === 'N') {
+                            // Night 근무 후 연속으로 근무하는 날이 있는지 확인
+                            let nightEndDay = i;
+                            
+                            // 연속 Night 근무의 마지막 날 찾기
+                            while (nightEndDay + 1 <= daysInMonth && getSchedule(employeeId, nightEndDay + 1) === 'N') {
+                                nightEndDay++;
+                            }
+                            
+                            // Night 근무 후 2일 연속 휴무가 있는지 확인
+                            if (nightEndDay + 2 <= daysInMonth) {
+                                const day1After = getSchedule(employeeId, nightEndDay + 1);
+                                const day2After = getSchedule(employeeId, nightEndDay + 2);
+                                
+                                // 현재 체크하는 날짜가 Night 근무 후 2일 이내이고, 휴무가 아닌 경우
+                                if (day <= nightEndDay + 2 && day > nightEndDay) {
+                                    if (day1After !== 'O' || day2After !== 'O') {
+                                        return true; // 위반
+                                    }
+                                }
+                            }
+                            
+                            // 다음 Night 근무를 찾기 위해 nightEndDay 이후부터 시작
+                            i = nightEndDay;
+                        }
+                    }
+                    
+                    return false;
+                };
+
                 const checkSeniorPresence = (day, shift) => {
                     if (!shift || shift === 'O') return true;
                     
@@ -287,6 +347,14 @@
                     
                     if (checkEAfterD(employeeId, day, currentSchedule)) {
                         errors.push('E 근무 후 D 근무 불가');
+                    }
+                    
+                    if (checkConsecutiveNight(employeeId, day)) {
+                        errors.push('N 근무는 최대 연속 2일까지');
+                    }
+                    
+                    if (checkNightOffRule(employeeId, day)) {
+                        errors.push('N 근무 후 2일 연속 휴무 필요');
                     }
                     
                     return errors;

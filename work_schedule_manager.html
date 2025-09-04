@@ -98,7 +98,7 @@
                                       { 
                                         'validation-error': hasValidationError(employee.id, day),
                                         // ✅ 에러가 없고 경고가 있으면 노란색 강조
-                                        'validation-warning': !hasValidationError(employee.id, day) && hasWarning(employee.id, day)
+                                        'validation-warning': hasWarning(employee.id, day)
                                       }
                                     ]"
                                     :title="getValidationErrors(employee.id, day).join(', ')"
@@ -120,7 +120,7 @@
 
                                 <!-- ✅ Night 잠재 위험(노란 경고) -->
                                 <div
-                                  v-if="!hasValidationError(employee.id, day) && getWarningMessages(employee.id, day).length"
+                                  v-if="getWarningMessages(employee.id, day).length"
                                   class="text-xs text-amber-700 mt-1"
                                 >
                                     <span v-for="(msg, i) in getWarningMessages(employee.id, day)" :key="i">⚠️ {{ msg }}</span>

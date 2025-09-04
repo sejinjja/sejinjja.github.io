@@ -286,7 +286,7 @@
                 const checkNightAfterRest = (employeeId, day) => {
                     const currentSchedule = getSchedule(employeeId, day);
                     if (currentSchedule !== 'N' || day >= getDaysInMonth() - 1) return false;
-                    return !(getSchedule(employeeId, day + 1) === 'O' && getSchedule(employeeId, day + 2) === 'O') || !(getSchedule(employeeId, day + 1) === 'N' && getSchedule(employeeId, day + 2) === 'O')&& getSchedule(employeeId, day + 3) === 'O');
+                    return !(getSchedule(employeeId, day + 1) === 'O' && getSchedule(employeeId, day + 2) === 'O') && !(getSchedule(employeeId, day + 1) === 'N' && getSchedule(employeeId, day + 2) === 'O' && getSchedule(employeeId, day + 3) === 'O');
                 };
 
                 const checkNightWarning = (employeeId, day) => {

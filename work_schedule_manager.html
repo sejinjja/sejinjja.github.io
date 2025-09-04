@@ -78,12 +78,12 @@
                                     :value="getSchedule(employee.id, day)"
                                     @change="handleScheduleChange(employee.id, day, $event.target.value)"
                                     :class="[
-                                        'w-full p-1 text-xs border rounded',
-                                        { 
-                                            'border-red-500': hasValidationError(employee.id, day),
-                                            'bg-yellow-100': checkNightWarning(employee.id, day) && !hasValidationError(employee.id, day)
-                                        }
-                                    ]"
+    'w-full p-1 text-xs border rounded',
+    { 
+        'bg-red-200 border-red-500': hasValidationError(employee.id, day), // 빨간 배경 + 테두리
+        'bg-yellow-100': checkNightWarning(employee.id, day) && !hasValidationError(employee.id, day) // 노란 경고
+    }
+]"
                                     :title="getValidationErrors(employee.id, day).join(', ')"
                                 >
                                     <option value="">-</option>

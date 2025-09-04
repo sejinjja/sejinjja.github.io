@@ -137,7 +137,6 @@
                 <h3 class="font-bold mb-2">규칙 안내:</h3>
                 <ul class="space-y-1">
                     <li>• 6일 연속 근무 불가</li>
-                    <li>• 휴일(O) 다음날은 주간(D) 근무 불가</li>
                     <li>• 오후(E) 근무 후 주간(D) 근무 불가</li>
                     <li>• 동일 시간대에는 선임이 최소 1명 필요</li>
                     <li>• Night(N) 근무는 최대 연속 2일까지 가능 (위반 시 빨간색)</li>
@@ -256,11 +255,6 @@
                     return consecutiveDays >= 6;
                 };
 
-                const checkHolidayNextDay = (employeeId, day, shift) => {
-                    if (shift !== 'D' || day <= 1) return false;
-                    const prevSchedule = getSchedule(employeeId, day - 1);
-                    return prevSchedule === 'O';
-                };
 
                 const checkEAfterD = (employeeId, day, shift) => {
                     if (shift !== 'D' || day <= 1) return false;
@@ -341,9 +335,7 @@
                         errors.push('6일 연속 근무 불가');
                     }
                     
-                    if (checkHolidayNextDay(employeeId, day, currentSchedule)) {
-                        errors.push('휴일 다음날 D 근무 불가');
-                    }
+                    
                     
                     if (checkEAfterD(employeeId, day, currentSchedule)) {
                         errors.push('E 근무 후 D 근무 불가');

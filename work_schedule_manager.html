@@ -307,6 +307,9 @@ if(!getSchedule(employeeId, day)) return [];
                     if (checkConsecutiveWork(employeeId, day)) errors.push('6일 연속 근무');
                     if (checkEAfterD(employeeId, day, getSchedule(employeeId, day))) errors.push('E->D 불가');
                     if (!checkSeniorPresence(day, getSchedule(employeeId, day)) && getSchedule(employeeId, day) !== 'O') errors.push('선임 부재');
+                    if (checkConsecutiveNight(employeeId, day)) errors.push('N > 2 불가');
+
+                    if (checkNightAfterRest(employeeId, day)) errors.push('휴일필요');
                     return errors;
                 };
 

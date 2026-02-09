@@ -1,1 +1,0 @@
-{"version":3,"sources":["reset.scss"],"names":[],"mappings":"AAAA;EACE;EACA;EACA;EACA;EACA","file":"reset.19c4cd70.css","sourceRoot":"..","sourcesContent":["html, body {\n  width: 100%;\n  height: 100%;\n  margin: 0;\n  padding: 0;\n  overflow: hidden;\n}"]}

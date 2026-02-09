@@ -26,5 +26,10 @@
     "tailwindcss": "^3.4.0",
     "typescript": "^5.7.0"
   },
+  "pnpm": {
+    "overrides": {
+      "@nuxtjs/mdc": "0.17.2"
+    }
+  },
   "packageManager": "pnpm@9.15.0"
 }

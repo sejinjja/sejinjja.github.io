@@ -2,6 +2,27 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+@layer base {
+  body {
+    font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    background-color: #ffffff;
+    color: #0f172a;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  .dark body {
+    background-color: #0b1120;
+    color: #d8e0ec;
+  }
+
+  ::selection {
+    background-color: rgba(34, 211, 238, 0.35);
+    color: #0b1120;
+  }
+
+  .dark ::selection {
+    background-color: rgba(34, 211, 238, 0.3);
+    color: #ecfeff;
+  }
 }

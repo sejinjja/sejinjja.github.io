@@ -23,7 +23,6 @@
 </template>
 
 <script setup lang="ts">
-const route = useRoute()
 useHead({
   title: '글',
 })

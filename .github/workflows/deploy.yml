@@ -35,6 +35,12 @@ jobs:
       - name: Typecheck
         run: pnpm typecheck
 
+      - name: Sync Notion posts
+        run: pnpm notion:sync
+        env:
+          NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
+          NOTION_DATABASE_ID: ${{ secrets.NOTION_DATABASE_ID }}
+
       - name: Generate static site
         run: pnpm generate
 

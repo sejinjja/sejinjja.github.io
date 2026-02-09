@@ -1,7 +1,7 @@
 <template>
-  <header class="sticky top-0 z-50 bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm border-b border-gray-100 dark:border-gray-800">
+  <header class="sticky top-0 z-50 bg-white/90 dark:bg-gray-950/90 backdrop-blur-sm border-b border-gray-100 dark:border-gray-800">
     <nav class="max-w-5xl mx-auto px-6 h-16 flex items-center justify-between">
-      <NuxtLink to="/" class="text-xl font-bold text-gray-900 dark:text-white hover:text-primary-600 dark:hover:text-primary-400 transition-colors" @click="closeMenu">
+      <NuxtLink to="/" class="text-xl font-bold text-gray-900 dark:text-gray-100 hover:text-primary-600 dark:hover:text-primary-300 transition-colors" @click="closeMenu">
         조세진
       </NuxtLink>
 
@@ -11,8 +11,8 @@
           <li v-for="item in navItems" :key="item.to">
             <NuxtLink
               :to="item.to"
-              class="text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
-              active-class="!text-primary-600 dark:!text-primary-400"
+              class="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-300 transition-colors"
+              active-class="!text-primary-600 dark:!text-primary-300"
             >
               {{ item.label }}
             </NuxtLink>
@@ -20,7 +20,7 @@
         </ul>
         <button
           aria-label="테마 변경"
-          class="p-2 text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
+          class="p-2 text-gray-500 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 transition-colors"
           @click="cycleColorMode"
         >
           <Icon :name="colorModeIcon" class="w-5 h-5" />
@@ -31,13 +31,13 @@
       <div class="flex md:hidden items-center gap-1">
         <button
           aria-label="테마 변경"
-          class="p-2 text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
+          class="p-2 text-gray-500 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 transition-colors"
           @click="cycleColorMode"
         >
           <Icon :name="colorModeIcon" class="w-5 h-5" />
         </button>
         <button
-          class="p-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
+          class="p-2 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100"
           aria-label="메뉴 열기"
           @click="toggleMenu"
         >
@@ -55,13 +55,13 @@
       leave-from-class="opacity-100 translate-y-0"
       leave-to-class="opacity-0 -translate-y-2"
     >
-      <div v-if="isMenuOpen" class="md:hidden border-b border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-900">
+      <div v-if="isMenuOpen" class="md:hidden border-b border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-950">
         <ul class="px-6 py-4 space-y-3">
           <li v-for="item in navItems" :key="item.to">
             <NuxtLink
               :to="item.to"
-              class="block text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors py-1"
-              active-class="!text-primary-600 dark:!text-primary-400"
+              class="block text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-300 transition-colors py-1"
+              active-class="!text-primary-600 dark:!text-primary-300"
               @click="closeMenu"
             >
               {{ item.label }}

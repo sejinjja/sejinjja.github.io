@@ -173,3 +173,27 @@ sejinjja.github.io/
 4. master push 후 GitHub Actions 워크플로우 성공 확인
 5. `https://sejinjja.github.io` 접속하여 모든 페이지 동작 확인
 6. 모바일 기기에서 반응형 레이아웃 확인
+
+---
+
+## 운영 절차 (2026-02 업데이트)
+
+### 배포 파이프라인
+
+- 브랜치: `master`
+- 배포 소스: GitHub Pages `GitHub Actions`
+- CI 순서: `pnpm install --frozen-lockfile` → `pnpm typecheck` → `pnpm generate` → artifact upload → deploy
+
+### 저장소 정책
+
+- `dist/`는 더 이상 Git 추적 대상이 아님 (CI 아티팩트 기반 배포)
+- 정적 결과물은 `.output/public`에서만 검증
+
+### 롤백 기준
+
+- `build` 또는 `deploy` job이 red이면 배포 중단
+- 복구는 직전 green commit을 `master`에 재배포(re-run 또는 revert 후 push)
+- 복구 후 확인 항목:
+  1. GitHub Actions `build` / `deploy` green
+  2. `https://sejinjja.github.io` 정상 응답
+  3. 주요 경로(`/`, `/about`, `/projects`, `/writing`, `/writing/hello-world`) 렌더링 정상

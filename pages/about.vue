@@ -1,6 +1,6 @@
 <template>
   <div class="max-w-5xl mx-auto px-6 py-16">
-    <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-10">소개</h1>
+    <h1 class="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-10">소개</h1>
 
     <div class="space-y-16">
       <AboutProfileCard />
@@ -17,10 +17,10 @@
           <div
             v-for="strength in strengths"
             :key="strength.title"
-            class="p-5 rounded-lg border border-gray-100 dark:border-gray-800"
+            class="p-5 rounded-lg border border-gray-100 dark:border-gray-800 dark:bg-gray-900/40"
           >
-            <h3 class="font-bold text-gray-900 dark:text-white mb-2 text-sm">{{ strength.title }}</h3>
-            <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">{{ strength.description }}</p>
+            <h3 class="font-bold text-gray-900 dark:text-gray-100 mb-2 text-sm">{{ strength.title }}</h3>
+            <p class="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">{{ strength.description }}</p>
           </div>
         </div>
       </section>
@@ -29,9 +29,27 @@
 </template>
 
 <script setup lang="ts">
-useHead({
+const route = useRoute()
+const { public: { siteUrl } } = useRuntimeConfig()
+
+const canonicalUrl = computed(() => `${siteUrl.replace(/\/$/, '')}${route.path}`)
+const description = '문제 접근 패턴, 품질 기준, 기술 성향과 협업 방식 등 조세진 개발자의 일하는 방식을 소개합니다.'
+
+useSeoMeta({
   title: '소개',
+  description,
+  ogTitle: '소개 | 조세진',
+  ogDescription: description,
+  ogType: 'website',
+  ogUrl: canonicalUrl,
+  ogLocale: 'ko_KR',
+  twitterCard: 'summary_large_image',
 })
+
+useHead(() => ({
+  title: '소개',
+  link: [{ rel: 'canonical', href: canonicalUrl.value }],
+}))
 
 const strengths = [
   {

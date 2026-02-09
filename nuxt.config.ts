@@ -4,6 +4,9 @@ export default defineNuxtConfig({
   ssr: true,
   nitro: {
     preset: 'github-pages',
+    prerender: {
+      routes: ['/sitemap.xml'],
+    },
   },
 
   modules: [
@@ -19,6 +22,12 @@ export default defineNuxtConfig({
     classSuffix: '',
   },
 
+  runtimeConfig: {
+    public: {
+      siteUrl: 'https://sejinjja.github.io',
+    },
+  },
+
   app: {
     head: {
       title: '조세진 | 프런트엔드/웹 개발자',
@@ -29,7 +38,7 @@ export default defineNuxtConfig({
         { name: 'description', content: '실무에서 통하는 정확함과 구조화된 사고로 문제를 끝까지 해결하는 프런트엔드/웹 개발자 조세진입니다.' },
       ],
       link: [
-        { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
+        { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' },
         { rel: 'stylesheet', href: 'https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css' },
       ],
     },

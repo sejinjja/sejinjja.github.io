@@ -1,5 +1,5 @@
 <template>
-  <section class="bg-primary-900 text-white">
+  <section class="bg-gradient-to-br from-gray-900 via-primary-900 to-gray-950 text-white">
     <div class="max-w-5xl mx-auto px-6 py-24 md:py-32">
       <p class="text-primary-300 text-sm font-medium tracking-wider uppercase mb-4">
         Frontend / Web Developer
@@ -14,14 +14,14 @@
       <div class="mt-10 flex flex-wrap gap-4">
         <NuxtLink
           to="/about"
-          class="inline-flex items-center px-6 py-3 bg-white text-primary-900 font-semibold rounded-lg hover:bg-primary-50 transition-colors"
+          class="inline-flex items-center px-6 py-3 bg-white text-primary-900 font-semibold rounded-lg hover:bg-primary-50 transition-colors shadow-sm"
         >
           더 알아보기
           <Icon name="heroicons:arrow-right" class="w-4 h-4 ml-2" />
         </NuxtLink>
         <NuxtLink
           to="/projects"
-          class="inline-flex items-center px-6 py-3 border border-primary-400 text-primary-100 font-semibold rounded-lg hover:bg-primary-800 transition-colors"
+          class="inline-flex items-center px-6 py-3 border border-primary-300/80 text-primary-50 font-semibold rounded-lg hover:bg-primary-800/70 transition-colors"
         >
           프로젝트 보기
         </NuxtLink>

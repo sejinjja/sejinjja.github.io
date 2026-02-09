@@ -1,7 +1,7 @@
 <template>
   <div class="max-w-5xl mx-auto px-6 py-16">
-    <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-3">프로젝트</h1>
-    <p class="text-gray-500 dark:text-gray-400 mb-10">반복 작업을 도구로 전환하고, 아이디어를 서비스로 만듭니다.</p>
+    <h1 class="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-3">프로젝트</h1>
+    <p class="text-gray-500 dark:text-gray-300 mb-10">반복 작업을 도구로 전환하고, 아이디어를 서비스로 만듭니다.</p>
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
       <ProjectsProjectCard
@@ -14,9 +14,27 @@
 </template>
 
 <script setup lang="ts">
-useHead({
+const route = useRoute()
+const { public: { siteUrl } } = useRuntimeConfig()
+
+const canonicalUrl = computed(() => `${siteUrl.replace(/\/$/, '')}${route.path}`)
+const description = '반복 작업을 도구로 전환하고 아이디어를 서비스로 구현한 프로젝트를 소개합니다.'
+
+useSeoMeta({
   title: '프로젝트',
+  description,
+  ogTitle: '프로젝트 | 조세진',
+  ogDescription: description,
+  ogType: 'website',
+  ogUrl: canonicalUrl,
+  ogLocale: 'ko_KR',
+  twitterCard: 'summary_large_image',
 })
+
+useHead(() => ({
+  title: '프로젝트',
+  link: [{ rel: 'canonical', href: canonicalUrl.value }],
+}))
 
 const projects = [
   {

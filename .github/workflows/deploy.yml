@@ -36,6 +36,7 @@ jobs:
         run: pnpm typecheck
 
       - name: Sync Notion posts
+        if: ${{ secrets.NOTION_TOKEN != '' && secrets.NOTION_DATABASE_ID != '' }}
         run: pnpm notion:sync
         env:
           NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}

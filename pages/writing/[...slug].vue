@@ -36,7 +36,7 @@ const defaultDescription = '실무에서 부딪힌 문제를 구조적으로 해
 
 const { data: article } = await useAsyncData<WritingDoc | null>(
   `writing:meta:${route.path}`,
-  () => queryContent(route.path).findOne(),
+  () => queryCollection('content').path(route.path).first() as Promise<WritingDoc | null>,
 )
 
 const seoTitle = computed(() => article.value?.title || '글')

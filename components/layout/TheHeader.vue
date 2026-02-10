@@ -88,7 +88,8 @@ const colorModeIcon = computed(() => {
 function cycleColorMode() {
   const modes = ['system', 'light', 'dark'] as const
   const currentIdx = modes.indexOf(colorMode.preference as typeof modes[number])
-  colorMode.preference = modes[(currentIdx + 1) % modes.length]
+  const nextMode = modes[(currentIdx + 1) % modes.length] ?? 'system'
+  colorMode.preference = nextMode
 }
 
 const navItems = [

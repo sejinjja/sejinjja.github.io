@@ -23,6 +23,14 @@ const SUPPORTED_IMAGE_EXTENSIONS = new Set([
 
 const CONTENT_SUBDIR = ['content', 'writing']
 const IMAGE_SUBDIR = ['public', 'notion-images']
+const DEFAULT_PROPERTY_NAMES = Object.freeze({
+  title: 'title',
+  slug: 'slug',
+  description: 'description',
+  date: 'date',
+  tags: 'tags',
+  published: 'published',
+})
 
 function getEnvOrThrow(name) {
   const value = process.env[name]?.trim()
@@ -30,6 +38,59 @@ function getEnvOrThrow(name) {
     throw new Error(`${name} is required`)
   }
   return value
+}
+
+function getNotionTokenOrThrow() {
+  const token = process.env.NOTION_TOKEN?.trim()
+  if (token) {
+    return token
+  }
+
+  const apiKey = process.env.NOTION_API_KEY?.trim()
+  if (apiKey) {
+    return apiKey
+  }
+
+  throw new Error('NOTION_TOKEN (or NOTION_API_KEY) is required')
+}
+
+function getEnvOrDefault(name, fallback) {
+  const value = process.env[name]?.trim()
+  return value || fallback
+}
+
+function readPropertyNames() {
+  return {
+    title: getEnvOrDefault('NOTION_TITLE_PROPERTY', DEFAULT_PROPERTY_NAMES.title),
+    slug: getEnvOrDefault('NOTION_SLUG_PROPERTY', DEFAULT_PROPERTY_NAMES.slug),
+    description: getEnvOrDefault('NOTION_DESCRIPTION_PROPERTY', DEFAULT_PROPERTY_NAMES.description),
+    date: getEnvOrDefault('NOTION_DATE_PROPERTY', DEFAULT_PROPERTY_NAMES.date),
+    tags: getEnvOrDefault('NOTION_TAGS_PROPERTY', DEFAULT_PROPERTY_NAMES.tags),
+    published: getEnvOrDefault('NOTION_PUBLISHED_PROPERTY', DEFAULT_PROPERTY_NAMES.published),
+  }
+}
+
+function getPropertyByName(properties, propertyName) {
+  if (!propertyName || !properties) {
+    return undefined
+  }
+
+  if (propertyName in properties) {
+    return properties[propertyName]
+  }
+
+  const normalizedTarget = propertyName.trim().toLowerCase()
+  if (!normalizedTarget) {
+    return undefined
+  }
+
+  for (const [candidateName, property] of Object.entries(properties)) {
+    if (candidateName.trim().toLowerCase() === normalizedTarget) {
+      return property
+    }
+  }
+
+  return undefined
 }
 
 function parseTextProperty(property) {
@@ -68,6 +129,22 @@ function parseTagsProperty(property) {
   return property.multi_select
     .map((tag) => tag.name.trim())
     .filter(Boolean)
+}
+
+function parseCheckboxProperty(property) {
+  if (!property) {
+    return false
+  }
+
+  if (property.type === 'checkbox') {
+    return Boolean(property.checkbox)
+  }
+
+  if (property.type === 'formula' && property.formula?.type === 'boolean') {
+    return Boolean(property.formula.boolean)
+  }
+
+  return false
 }
 
 function getImageExtension(imageUrl, contentType) {
@@ -128,23 +205,13 @@ async function replaceDirectory(targetDir, sourceDir) {
   await mkdir(targetDir, { recursive: true })
 }
 
-async function fetchPublishedPages(notion, databaseId) {
+async function fetchDatabasePages(notion, databaseId) {
   const pages = []
   let nextCursor = undefined
 
   do {
     const response = await notion.databases.query({
       database_id: databaseId,
-      filter: {
-        property: 'published',
-        checkbox: { equals: true },
-      },
-      sorts: [
-        {
-          property: 'date',
-          direction: 'descending',
-        },
-      ],
       page_size: 100,
       start_cursor: nextCursor,
     })
@@ -219,14 +286,15 @@ async function localizeImageUrls(markdown, slug, tempImageRoot, warnings) {
   return updatedMarkdown
 }
 
-function toPostMetadata(page) {
+function toPostMetadata(page, propertyNames) {
   const properties = page.properties || {}
 
-  const title = parseTextProperty(properties.title)
-  const slug = parseTextProperty(properties.slug)
-  const description = parseTextProperty(properties.description)
-  const date = parseDateProperty(properties.date)
-  const tags = parseTagsProperty(properties.tags)
+  const title = parseTextProperty(getPropertyByName(properties, propertyNames.title))
+  const slug = parseTextProperty(getPropertyByName(properties, propertyNames.slug))
+  const description = parseTextProperty(getPropertyByName(properties, propertyNames.description))
+  const date = parseDateProperty(getPropertyByName(properties, propertyNames.date))
+  const tags = parseTagsProperty(getPropertyByName(properties, propertyNames.tags))
+  const published = parseCheckboxProperty(getPropertyByName(properties, propertyNames.published))
 
   return {
     pageId: page.id,
@@ -235,12 +303,14 @@ function toPostMetadata(page) {
     description,
     date,
     tags,
+    published,
   }
 }
 
 async function main() {
-  const notionToken = getEnvOrThrow('NOTION_TOKEN')
+  const notionToken = getNotionTokenOrThrow()
   const notionDatabaseId = getEnvOrThrow('NOTION_DATABASE_ID')
+  const propertyNames = readPropertyNames()
 
   const scriptDir = dirname(fileURLToPath(import.meta.url))
   const projectRoot = resolve(scriptDir, '..')
@@ -250,19 +320,30 @@ async function main() {
   const notion = new Client({ auth: notionToken })
   const n2m = new NotionToMarkdown({ notionClient: notion })
 
-  const pages = await fetchPublishedPages(notion, notionDatabaseId)
+  const pages = await fetchDatabasePages(notion, notionDatabaseId)
 
   const skippedWarnings = []
   const imageWarnings = []
   const posts = []
   const seenSlugs = new Set()
+  let publishedPageCount = 0
 
   for (const page of pages) {
-    const post = toPostMetadata(page)
+    const post = toPostMetadata(page, propertyNames)
+
+    if (!post.published) {
+      continue
+    }
+
+    publishedPageCount += 1
 
     if (!post.title || !post.slug || !post.date) {
       skippedWarnings.push(
-        `Skipped page ${post.pageId}: missing required fields (title, slug, or date).`,
+        `Skipped page ${post.pageId}: missing required fields using configured property names (${JSON.stringify({
+          title: propertyNames.title,
+          slug: propertyNames.slug,
+          date: propertyNames.date,
+        })}).`,
       )
       continue
     }
@@ -277,6 +358,14 @@ async function main() {
 
     seenSlugs.add(post.slug)
     posts.push(post)
+  }
+
+  posts.sort((a, b) => b.date.localeCompare(a.date))
+
+  if (pages.length > 0 && publishedPageCount === 0) {
+    console.warn(
+      `[notion-sync] No pages matched "${propertyNames.published}" = true. Check your published property name or values.`,
+    )
   }
 
   const tempRoot = await mkdtemp(join(tmpdir(), 'notion-sync-'))
@@ -319,7 +408,8 @@ async function main() {
   }
 
   const generatedFiles = await readdir(contentDir).catch(() => [])
-  console.log(`[notion-sync] Queried ${pages.length} published pages`)
+  console.log(`[notion-sync] Queried ${pages.length} pages from database`)
+  console.log(`[notion-sync] Matched ${publishedPageCount} pages with "${propertyNames.published}" = true`)
   console.log(`[notion-sync] Generated ${generatedFiles.length} markdown files in ${CONTENT_SUBDIR.join('/')}`)
   console.log(`[notion-sync] Completed successfully`)
 }

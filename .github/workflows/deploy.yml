@@ -39,7 +39,14 @@ jobs:
         run: pnpm notion:sync
         env:
           NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
+          NOTION_API_KEY: ${{ secrets.NOTION_API_KEY }}
           NOTION_DATABASE_ID: ${{ secrets.NOTION_DATABASE_ID }}
+          NOTION_TITLE_PROPERTY: ${{ vars.NOTION_TITLE_PROPERTY }}
+          NOTION_SLUG_PROPERTY: ${{ vars.NOTION_SLUG_PROPERTY }}
+          NOTION_DESCRIPTION_PROPERTY: ${{ vars.NOTION_DESCRIPTION_PROPERTY }}
+          NOTION_DATE_PROPERTY: ${{ vars.NOTION_DATE_PROPERTY }}
+          NOTION_TAGS_PROPERTY: ${{ vars.NOTION_TAGS_PROPERTY }}
+          NOTION_PUBLISHED_PROPERTY: ${{ vars.NOTION_PUBLISHED_PROPERTY }}
 
       - name: Generate static site
         run: pnpm generate

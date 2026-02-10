@@ -11,9 +11,9 @@ Posts are now generated from a Notion database at build time.
 4. Click `...` -> `Connections` -> connect the integration.
 5. Copy the database ID from the database URL.
 
-## 2. Required database schema
+## 2. Database schema
 
-Use these exact property names:
+Default property names are:
 
 - `title` (Title)
 - `slug` (Rich text)
@@ -24,11 +24,20 @@ Use these exact property names:
 
 Only rows with `published = true` are exported.
 
+If your Notion DB uses different property names, map them via env vars:
+
+- `NOTION_TITLE_PROPERTY`
+- `NOTION_SLUG_PROPERTY`
+- `NOTION_DESCRIPTION_PROPERTY`
+- `NOTION_DATE_PROPERTY`
+- `NOTION_TAGS_PROPERTY`
+- `NOTION_PUBLISHED_PROPERTY`
+
 ## 3. Local development flow
 
 1. Create `.env` from `.env.example`.
 2. Set:
-   - `NOTION_TOKEN`
+   - `NOTION_TOKEN` (or `NOTION_API_KEY`)
    - `NOTION_DATABASE_ID`
 3. Run sync:
 
@@ -38,7 +47,9 @@ pnpm notion:sync
 
 The sync script:
 
-- fetches published posts from Notion (`date desc`)
+- fetches pages from Notion DB
+- filters rows with `published = true`
+- sorts generated posts by `date` desc
 - validates required fields and slug format
 - converts Notion blocks to Markdown
 - downloads images into `public/notion-images/<slug>/`
@@ -62,10 +73,19 @@ pnpm dev
 
 Add these GitHub repository secrets:
 
-- `NOTION_TOKEN`
+- `NOTION_TOKEN` (or `NOTION_API_KEY`)
 - `NOTION_DATABASE_ID`
 
-Without secrets, deployment build will fail at the sync step.
+Optional mapping can be set as repository variables or secrets:
+
+- `NOTION_TITLE_PROPERTY`
+- `NOTION_SLUG_PROPERTY`
+- `NOTION_DESCRIPTION_PROPERTY`
+- `NOTION_DATE_PROPERTY`
+- `NOTION_TAGS_PROPERTY`
+- `NOTION_PUBLISHED_PROPERTY`
+
+Without required secrets, deployment build will fail at the sync step.
 
 ## 5. Generated file conventions
 

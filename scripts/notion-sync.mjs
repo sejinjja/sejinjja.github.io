@@ -147,6 +147,10 @@ function parseCheckboxProperty(property) {
   return false
 }
 
+function normalizeSlug(slug) {
+  return slug.trim().toLowerCase()
+}
+
 function getImageExtension(imageUrl, contentType) {
   try {
     const pathname = new URL(imageUrl).pathname
@@ -205,16 +209,55 @@ async function replaceDirectory(targetDir, sourceDir) {
   await mkdir(targetDir, { recursive: true })
 }
 
+async function resolveDataSourceId(notion, databaseId) {
+  const envDataSourceId = process.env.NOTION_DATA_SOURCE_ID?.trim()
+  if (envDataSourceId) {
+    return envDataSourceId
+  }
+
+  if (typeof notion?.databases?.retrieve !== 'function') {
+    throw new Error('Could not resolve Notion data source id automatically. Set NOTION_DATA_SOURCE_ID.')
+  }
+
+  const database = await notion.databases.retrieve({ database_id: databaseId })
+  const dataSourceId = database?.data_sources?.[0]?.id
+  if (dataSourceId) {
+    return dataSourceId
+  }
+
+  throw new Error('Could not resolve Notion data source id from database. Set NOTION_DATA_SOURCE_ID.')
+}
+
 async function fetchDatabasePages(notion, databaseId) {
   const pages = []
   let nextCursor = undefined
+  const canQueryDatabase = typeof notion?.databases?.query === 'function'
+  const canQueryDataSource = typeof notion?.dataSources?.query === 'function'
+
+  let queryMode = 'database'
+  let queryTargetId = databaseId
+
+  if (canQueryDatabase) {
+    queryMode = 'database'
+  } else if (canQueryDataSource) {
+    queryMode = 'data-source'
+    queryTargetId = await resolveDataSourceId(notion, databaseId)
+  } else {
+    throw new Error('Unsupported @notionhq/client version: no query method found.')
+  }
 
   do {
-    const response = await notion.databases.query({
-      database_id: databaseId,
-      page_size: 100,
-      start_cursor: nextCursor,
-    })
+    const response = queryMode === 'database'
+      ? await notion.databases.query({
+          database_id: queryTargetId,
+          page_size: 100,
+          start_cursor: nextCursor,
+        })
+      : await notion.dataSources.query({
+          data_source_id: queryTargetId,
+          page_size: 100,
+          start_cursor: nextCursor,
+        })
 
     for (const result of response.results) {
       if (result.object === 'page') {
@@ -324,6 +367,7 @@ async function main() {
 
   const skippedWarnings = []
   const imageWarnings = []
+  const slugWarnings = []
   const posts = []
   const seenSlugs = new Set()
   let publishedPageCount = 0
@@ -346,6 +390,13 @@ async function main() {
         })}).`,
       )
       continue
+    }
+
+    const originalSlug = post.slug
+    post.slug = normalizeSlug(post.slug)
+
+    if (post.slug !== originalSlug) {
+      slugWarnings.push(`Normalized slug "${originalSlug}" -> "${post.slug}" on page ${post.pageId}.`)
     }
 
     if (!SLUG_PATTERN.test(post.slug)) {
@@ -403,6 +454,13 @@ async function main() {
   if (imageWarnings.length) {
     console.warn('[notion-sync] Some images could not be downloaded and kept original URL:')
     for (const warning of imageWarnings) {
+      console.warn(`- ${warning}`)
+    }
+  }
+
+  if (slugWarnings.length) {
+    console.warn('[notion-sync] Some slugs were normalized to lowercase:')
+    for (const warning of slugWarnings) {
       console.warn(`- ${warning}`)
     }
   }

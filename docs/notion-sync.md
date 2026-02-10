@@ -39,6 +39,7 @@ If your Notion DB uses different property names, map them via env vars:
 2. Set:
    - `NOTION_TOKEN` (or `NOTION_API_KEY`)
    - `NOTION_DATABASE_ID`
+   - optional: `NOTION_DATA_SOURCE_ID` (for newer Notion API client compatibility)
 3. Run sync:
 
 ```bash
@@ -50,6 +51,7 @@ The sync script:
 - fetches pages from Notion DB
 - filters rows with `published = true`
 - sorts generated posts by `date` desc
+- normalizes slug values to lowercase before validation
 - validates required fields and slug format
 - converts Notion blocks to Markdown
 - downloads images into `public/notion-images/<slug>/`
@@ -75,6 +77,7 @@ Add these GitHub repository secrets:
 
 - `NOTION_TOKEN` (or `NOTION_API_KEY`)
 - `NOTION_DATABASE_ID`
+- optional: `NOTION_DATA_SOURCE_ID`
 
 Optional mapping can be set as repository variables or secrets:
 

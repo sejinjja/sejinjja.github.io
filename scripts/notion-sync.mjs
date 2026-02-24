@@ -368,8 +368,8 @@ async function main() {
   const skippedWarnings = []
   const imageWarnings = []
   const slugWarnings = []
-  const posts = []
-  const seenSlugs = new Set()
+  const duplicateSlugWarnings = []
+  const postsBySlug = new Map()
   let publishedPageCount = 0
 
   for (const page of pages) {
@@ -403,14 +403,28 @@ async function main() {
       throw new Error(`Invalid slug "${post.slug}" on page ${post.pageId}. Allowed pattern: ${SLUG_PATTERN}`)
     }
 
-    if (seenSlugs.has(post.slug)) {
-      throw new Error(`Duplicate slug "${post.slug}" detected.`)
+    const existingPost = postsBySlug.get(post.slug)
+    if (!existingPost) {
+      postsBySlug.set(post.slug, post)
+      continue
     }
 
-    seenSlugs.add(post.slug)
-    posts.push(post)
+    const shouldReplaceExisting = post.date > existingPost.date
+      || (post.date === existingPost.date && post.pageId.localeCompare(existingPost.pageId) < 0)
+
+    const keptPost = shouldReplaceExisting ? post : existingPost
+    const droppedPost = shouldReplaceExisting ? existingPost : post
+
+    if (shouldReplaceExisting) {
+      postsBySlug.set(post.slug, post)
+    }
+
+    duplicateSlugWarnings.push(
+      `Duplicate slug "${post.slug}" detected. Keeping page ${keptPost.pageId} (${keptPost.date}) and skipping page ${droppedPost.pageId} (${droppedPost.date}).`,
+    )
   }
 
+  const posts = [...postsBySlug.values()]
   posts.sort((a, b) => b.date.localeCompare(a.date))
 
   if (pages.length > 0 && publishedPageCount === 0) {
@@ -461,6 +475,13 @@ async function main() {
   if (slugWarnings.length) {
     console.warn('[notion-sync] Some slugs were normalized to lowercase:')
     for (const warning of slugWarnings) {
+      console.warn(`- ${warning}`)
+    }
+  }
+
+  if (duplicateSlugWarnings.length) {
+    console.warn('[notion-sync] Some pages were skipped due to duplicate slugs:')
+    for (const warning of duplicateSlugWarnings) {
       console.warn(`- ${warning}`)
     }
   }

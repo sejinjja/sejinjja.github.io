@@ -1,3 +1,17 @@
+import { readdirSync } from 'node:fs'
+import { resolve } from 'node:path'
+
+const writingContentDir = resolve(process.cwd(), 'content', 'writing')
+const writingRoutes = (() => {
+  try {
+    return readdirSync(writingContentDir, { withFileTypes: true })
+      .filter((entry) => entry.isFile() && entry.name.endsWith('.md'))
+      .map((entry) => `/writing/${entry.name.slice(0, -3)}`)
+  } catch {
+    return []
+  }
+})()
+
 export default defineNuxtConfig({
   devtools: { enabled: true },
 
@@ -5,7 +19,8 @@ export default defineNuxtConfig({
   nitro: {
     preset: 'github-pages',
     prerender: {
-      routes: ['/sitemap.xml'],
+      crawlLinks: false,
+      routes: ['/', '/about', '/projects', '/writing', '/sitemap.xml', ...writingRoutes],
     },
   },
 

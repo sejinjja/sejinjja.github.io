@@ -231,33 +231,17 @@ async function resolveDataSourceId(notion, databaseId) {
 async function fetchDatabasePages(notion, databaseId) {
   const pages = []
   let nextCursor = undefined
-  const canQueryDatabase = typeof notion?.databases?.query === 'function'
-  const canQueryDataSource = typeof notion?.dataSources?.query === 'function'
 
-  let queryMode = 'database'
-  let queryTargetId = databaseId
-
-  if (canQueryDatabase) {
-    queryMode = 'database'
-  } else if (canQueryDataSource) {
-    queryMode = 'data-source'
-    queryTargetId = await resolveDataSourceId(notion, databaseId)
-  } else {
-    throw new Error('Unsupported @notionhq/client version: no query method found.')
+  if (typeof notion?.databases?.query !== 'function') {
+    throw new Error('Unsupported @notionhq/client version: databases.query method not found.')
   }
 
   do {
-    const response = queryMode === 'database'
-      ? await notion.databases.query({
-          database_id: queryTargetId,
-          page_size: 100,
-          start_cursor: nextCursor,
-        })
-      : await notion.dataSources.query({
-          data_source_id: queryTargetId,
-          page_size: 100,
-          start_cursor: nextCursor,
-        })
+    const response = await notion.databases.query({
+      database_id: databaseId,
+      page_size: 100,
+      start_cursor: nextCursor,
+    })
 
     for (const result of response.results) {
       if (result.object === 'page') {

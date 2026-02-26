@@ -4,7 +4,7 @@
       <header class="mb-10">
         <NuxtLink to="/writing" class="inline-flex items-center gap-1 text-sm text-gray-400 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-300 transition-colors mb-6">
           <Icon name="heroicons:arrow-left" class="w-4 h-4" />
-          湲 紐⑸줉?쇰줈
+          글 목록으로
         </NuxtLink>
         <time class="block text-sm text-gray-400 mb-2">{{ articleDate }}</time>
         <h1 class="text-3xl font-bold text-gray-900 dark:text-gray-100 leading-tight mb-4">{{ article.title }}</h1>
@@ -39,7 +39,7 @@ const route = useRoute()
 const { public: { siteUrl } } = useRuntimeConfig()
 
 const canonicalUrl = computed(() => `${siteUrl.replace(/\/$/, '')}${route.path}`)
-const defaultDescription = '?ㅻТ?먯꽌 遺?ろ엺 臾몄젣瑜?援ъ“?곸쑝濡??닿껐??怨쇱젙??湲곕줉??湲?낅땲??'
+const defaultDescription = '실무에서 부딪힌 문제를 구조적으로 해결한 과정을 기록한 글입니다.'
 
 const { data: article } = await useAsyncData<WritingDoc | null>(
   `writing:meta:${route.path}`,
@@ -57,7 +57,7 @@ const articleDescription = computed(() => article.value?.description || article.
 const articleDate = computed(() => article.value?.date || article.value?.meta?.date || '')
 const articleTags = computed(() => article.value?.tags || article.value?.meta?.tags || [])
 
-const seoTitle = computed(() => article.value?.title || '湲')
+const seoTitle = computed(() => article.value?.title || '글')
 const seoDescription = computed(() => articleDescription.value || defaultDescription)
 
 useSeoMeta({

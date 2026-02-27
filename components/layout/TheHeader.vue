@@ -23,7 +23,7 @@
           class="p-2 text-gray-500 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 transition-colors"
           @click="cycleColorMode"
         >
-          <Icon :name="colorModeIcon" class="w-5 h-5" />
+          <Icon :name="colorModeIcon" class="w-5 h-5" aria-hidden="true" />
         </button>
       </div>
 
@@ -34,14 +34,16 @@
           class="p-2 text-gray-500 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 transition-colors"
           @click="cycleColorMode"
         >
-          <Icon :name="colorModeIcon" class="w-5 h-5" />
+          <Icon :name="colorModeIcon" class="w-5 h-5" aria-hidden="true" />
         </button>
         <button
           class="p-2 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100"
-          aria-label="메뉴 열기"
+          :aria-label="isMenuOpen ? '메뉴 닫기' : '메뉴 열기'"
+          :aria-expanded="isMenuOpen"
+          aria-controls="mobile-nav"
           @click="toggleMenu"
         >
-          <Icon :name="isMenuOpen ? 'heroicons:x-mark' : 'heroicons:bars-3'" class="w-6 h-6" />
+          <Icon :name="isMenuOpen ? 'heroicons:x-mark' : 'heroicons:bars-3'" class="w-6 h-6" aria-hidden="true" />
         </button>
       </div>
     </nav>
@@ -55,7 +57,7 @@
       leave-from-class="opacity-100 translate-y-0"
       leave-to-class="opacity-0 -translate-y-2"
     >
-      <div v-if="isMenuOpen" class="md:hidden border-b border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-950">
+      <div v-if="isMenuOpen" id="mobile-nav" class="md:hidden border-b border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-950">
         <ul class="px-6 py-4 space-y-3">
           <li v-for="item in navItems" :key="item.to">
             <NuxtLink

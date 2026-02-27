@@ -22,9 +22,10 @@
         :href="project.github"
         target="_blank"
         rel="noopener noreferrer"
+        :aria-label="`${project.title} GitHub 저장소 (새 탭에서 열림)`"
         class="inline-flex items-center gap-1.5 text-sm text-gray-500 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-300 transition-colors"
       >
-        <Icon name="mdi:github" class="w-4 h-4" />
+        <Icon name="mdi:github" class="w-4 h-4" aria-hidden="true" />
         GitHub
       </a>
       <a
@@ -32,9 +33,10 @@
         :href="project.demo"
         target="_blank"
         rel="noopener noreferrer"
+        :aria-label="`${project.title} 데모 (새 탭에서 열림)`"
         class="inline-flex items-center gap-1.5 text-sm text-gray-500 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-300 transition-colors"
       >
-        <Icon name="heroicons:arrow-top-right-on-square" class="w-4 h-4" />
+        <Icon name="heroicons:arrow-top-right-on-square" class="w-4 h-4" aria-hidden="true" />
         Demo
       </a>
     </div>

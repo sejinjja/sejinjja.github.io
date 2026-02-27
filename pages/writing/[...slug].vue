@@ -3,7 +3,7 @@
     <article v-if="article">
       <header class="mb-10">
         <NuxtLink to="/writing" class="inline-flex items-center gap-1 text-sm text-gray-400 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-300 transition-colors mb-6">
-          <Icon name="heroicons:arrow-left" class="w-4 h-4" />
+          <Icon name="heroicons:arrow-left" class="w-4 h-4" aria-hidden="true" />
           글 목록으로
         </NuxtLink>
         <time class="block text-sm text-gray-400 mb-2">{{ articleDate }}</time>

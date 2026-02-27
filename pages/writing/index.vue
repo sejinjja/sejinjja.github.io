@@ -59,7 +59,12 @@ const articles = computed(() => {
       date: item.date || item.meta?.date || '',
       tags: item.tags || item.meta?.tags || [],
     }))
-    .sort((a, b) => b.date.localeCompare(a.date))
+    .sort((a, b) => {
+      if (!a.date && !b.date) return 0
+      if (!a.date) return 1
+      if (!b.date) return -1
+      return b.date.localeCompare(a.date)
+    })
 })
 
 useSeoMeta({

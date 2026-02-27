@@ -1,6 +1,6 @@
 /// <reference types="node" />
 import { existsSync } from 'node:fs'
-import { readdir, stat } from 'node:fs/promises'
+import { readFile, readdir } from 'node:fs/promises'
 import { relative, resolve } from 'node:path'
 import type { Dirent } from 'node:fs'
 
@@ -61,6 +61,15 @@ function toWritingRoute(filePath: string, contentRoot: string): string | null {
   return `/writing/${slug}`
 }
 
+async function extractDateFromFrontmatter(filePath: string): Promise<string | undefined> {
+  const content = await readFile(filePath, 'utf-8')
+  const match = content.match(/^date:\s*"?([^"\n]+)"?/m)
+  const dateStr = match?.[1]?.trim()
+  if (!dateStr) return undefined
+  const parsed = new Date(dateStr)
+  return Number.isNaN(parsed.getTime()) ? undefined : parsed.toISOString()
+}
+
 async function getWritingEntries(contentRoot: string, siteUrl: string): Promise<SitemapEntry[]> {
   if (!existsSync(contentRoot)) {
     return []
@@ -73,10 +82,10 @@ async function getWritingEntries(contentRoot: string, siteUrl: string): Promise<
       return null
     }
 
-    const fileStats = await stat(filePath)
+    const lastmod = await extractDateFromFrontmatter(filePath)
     return {
       loc: `${siteUrl}${route}`,
-      lastmod: fileStats.mtime.toISOString(),
+      lastmod,
     } satisfies SitemapEntry
   }))
 

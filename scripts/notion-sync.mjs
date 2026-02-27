@@ -283,7 +283,14 @@ async function localizeImageUrls(markdown, slug, tempImageRoot, warnings) {
 
   for (const imageUrl of uniqueUrls) {
     try {
-      const response = await fetch(imageUrl)
+      const controller = new AbortController()
+      const timeoutId = setTimeout(() => controller.abort(), 15_000)
+      let response
+      try {
+        response = await fetch(imageUrl, { signal: controller.signal })
+      } finally {
+        clearTimeout(timeoutId)
+      }
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}`)
       }

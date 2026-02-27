@@ -37,6 +37,7 @@ jobs:
 
       - name: Sync Notion posts
         run: pnpm notion:sync
+        continue-on-error: true
         env:
           NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
           NOTION_API_KEY: ${{ secrets.NOTION_API_KEY }}

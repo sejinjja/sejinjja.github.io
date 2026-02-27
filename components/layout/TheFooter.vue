@@ -10,7 +10,7 @@
           target="_blank"
           rel="noopener noreferrer"
           class="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
-          aria-label="GitHub"
+          aria-label="GitHub (새 탭에서 열림)"
         >
           <Icon name="mdi:github" class="w-5 h-5" aria-hidden="true" />
         </a>

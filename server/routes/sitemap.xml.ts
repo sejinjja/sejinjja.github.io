@@ -63,8 +63,8 @@ function toWritingRoute(filePath: string, contentRoot: string): string | null {
 
 async function extractDateFromFrontmatter(filePath: string): Promise<string | undefined> {
   const content = await readFile(filePath, 'utf-8')
-  const match = content.match(/^date:\s*"?([^"\n]+)"?/m)
-  const dateStr = match?.[1]?.trim()
+  const match = content.match(/^date:\s*(?:"([^"]+)"|'([^']+)'|([^\n]+))/m)
+  const dateStr = (match?.[1] ?? match?.[2] ?? match?.[3])?.trim()
   if (!dateStr) return undefined
   const parsed = new Date(dateStr)
   return Number.isNaN(parsed.getTime()) ? undefined : parsed.toISOString()
@@ -107,11 +107,16 @@ export default defineEventHandler(async (event) => {
   const xml = [
     '<?xml version="1.0" encoding="UTF-8"?>',
     '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
-    ...allEntries.map(({ loc, lastmod }) => (
-      `<url><loc>${escapeXml(loc)}</loc>${lastmod ? `<lastmod>${lastmod}</lastmod>` : ''}</url>`
-    )),
+    ...allEntries.map(({ loc, lastmod }) =>
+      [
+        '  <url>',
+        `    <loc>${escapeXml(loc)}</loc>`,
+        lastmod ? `    <lastmod>${lastmod}</lastmod>` : null,
+        '  </url>',
+      ].filter(Boolean).join('\n')
+    ),
     '</urlset>',
-  ].join('')
+  ].join('\n')
 
   setHeader(event, 'content-type', 'application/xml; charset=UTF-8')
   return xml

@@ -228,17 +228,17 @@ async function resolveDataSourceId(notion, databaseId) {
   throw new Error('Could not resolve Notion data source id from database. Set NOTION_DATA_SOURCE_ID.')
 }
 
-async function fetchDatabasePages(notion, databaseId) {
+async function fetchDatabasePages(notion, dataSourceId) {
   const pages = []
   let nextCursor = undefined
 
-  if (typeof notion?.databases?.query !== 'function') {
-    throw new Error('Unsupported @notionhq/client version: databases.query method not found.')
+  if (typeof notion?.dataSources?.query !== 'function') {
+    throw new Error('Unsupported @notionhq/client version: dataSources.query method not found.')
   }
 
   do {
-    const response = await notion.databases.query({
-      database_id: databaseId,
+    const response = await notion.dataSources.query({
+      data_source_id: dataSourceId,
       page_size: 100,
       start_cursor: nextCursor,
     })
@@ -347,7 +347,8 @@ async function main() {
   const notion = new Client({ auth: notionToken })
   const n2m = new NotionToMarkdown({ notionClient: notion })
 
-  const pages = await fetchDatabasePages(notion, notionDatabaseId)
+  const dataSourceId = await resolveDataSourceId(notion, notionDatabaseId)
+  const pages = await fetchDatabasePages(notion, dataSourceId)
 
   const skippedWarnings = []
   const imageWarnings = []

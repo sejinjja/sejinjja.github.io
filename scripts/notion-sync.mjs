@@ -344,7 +344,7 @@ async function main() {
   const contentDir = resolve(projectRoot, ...CONTENT_SUBDIR)
   const publicImageDir = resolve(projectRoot, ...IMAGE_SUBDIR)
 
-  const notion = new Client({ auth: notionToken })
+  const notion = new Client({ auth: notionToken, timeoutMs: 120_000 })
   const n2m = new NotionToMarkdown({ notionClient: notion })
 
   const dataSourceId = await resolveDataSourceId(notion, notionDatabaseId)

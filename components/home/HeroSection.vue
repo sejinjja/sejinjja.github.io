@@ -17,7 +17,7 @@
           class="inline-flex items-center px-6 py-3 bg-white text-primary-900 font-semibold rounded-lg hover:bg-primary-50 transition-colors shadow-sm"
         >
           더 알아보기
-          <Icon name="heroicons:arrow-right" class="w-4 h-4 ml-2" />
+          <Icon name="heroicons:arrow-right" class="w-4 h-4 ml-2" aria-hidden="true" />
         </NuxtLink>
         <NuxtLink
           to="/projects"

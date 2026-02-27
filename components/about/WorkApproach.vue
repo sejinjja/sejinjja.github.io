@@ -8,7 +8,7 @@
       <div v-for="approach in approaches" :key="approach.title">
         <div class="flex items-center gap-3 mb-3">
           <div class="w-8 h-8 rounded-lg bg-primary-50 dark:bg-primary-900/30 flex items-center justify-center">
-            <Icon :name="approach.icon" class="w-4 h-4 text-primary-600 dark:text-primary-400" />
+            <Icon :name="approach.icon" class="w-4 h-4 text-primary-600 dark:text-primary-400" aria-hidden="true" />
           </div>
           <h3 class="font-bold text-gray-900 dark:text-white">{{ approach.title }}</h3>
         </div>

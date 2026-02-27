@@ -13,7 +13,7 @@
           class="group p-6 rounded-xl bg-white dark:bg-gray-900/60 border border-gray-100 dark:border-gray-800 hover:border-primary-200 dark:hover:border-primary-700 hover:shadow-sm transition-all"
         >
           <div class="w-10 h-10 rounded-lg bg-primary-50 dark:bg-primary-900/35 flex items-center justify-center mb-4 group-hover:bg-primary-100 dark:group-hover:bg-primary-800/40 transition-colors">
-            <Icon :name="item.icon" class="w-5 h-5 text-primary-600 dark:text-primary-300" />
+            <Icon :name="item.icon" class="w-5 h-5 text-primary-600 dark:text-primary-300" aria-hidden="true" />
           </div>
           <h3 class="font-bold text-gray-900 dark:text-gray-100 mb-1">{{ item.label }}</h3>
           <p class="text-sm text-gray-500 dark:text-gray-300">{{ item.description }}</p>

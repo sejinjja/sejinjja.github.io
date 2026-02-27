@@ -1,6 +1,6 @@
-const isMenuOpen = ref(false)
-
 export function useNavigation() {
+  const isMenuOpen = useState('navigation:isMenuOpen', () => false)
+
   function toggleMenu() {
     isMenuOpen.value = !isMenuOpen.value
   }

@@ -13,7 +13,7 @@
       >
         <div class="flex items-center gap-3 mb-3">
           <div class="w-10 h-10 rounded-lg bg-primary-50 dark:bg-primary-900/35 flex items-center justify-center">
-            <Icon :name="keyword.icon" class="w-5 h-5 text-primary-600 dark:text-primary-300" />
+            <Icon :name="keyword.icon" class="w-5 h-5 text-primary-600 dark:text-primary-300" aria-hidden="true" />
           </div>
           <h3 class="font-bold text-gray-900 dark:text-gray-100">{{ keyword.title }}</h3>
         </div>

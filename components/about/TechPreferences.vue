@@ -17,7 +17,7 @@
             :key="idx"
             class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed flex items-start gap-2"
           >
-            <Icon name="heroicons:check" class="w-4 h-4 text-primary-500 dark:text-primary-400 mt-0.5 flex-shrink-0" />
+            <Icon name="heroicons:check" class="w-4 h-4 text-primary-500 dark:text-primary-400 mt-0.5 flex-shrink-0" aria-hidden="true" />
             <span>{{ detail }}</span>
           </li>
         </ul>

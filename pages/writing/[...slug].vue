@@ -74,5 +74,27 @@ useSeoMeta({
 useHead(() => ({
   title: seoTitle.value,
   link: [{ rel: 'canonical', href: canonicalUrl.value }],
+  script: [
+    {
+      type: 'application/ld+json',
+      innerHTML: JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'BlogPosting',
+        headline: article.value?.title,
+        description: articleDescription.value || undefined,
+        datePublished: articleDate.value || undefined,
+        url: canonicalUrl.value,
+        author: {
+          '@type': 'Person',
+          name: '조세진',
+          url: 'https://sejinjja.github.io',
+        },
+        publisher: {
+          '@type': 'Person',
+          name: '조세진',
+        },
+      }),
+    },
+  ],
 }))
 </script>

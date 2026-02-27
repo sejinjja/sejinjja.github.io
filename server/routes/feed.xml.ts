@@ -33,9 +33,9 @@ function escapeXml(value: string): string {
 async function extractMetaFromFrontmatter(filePath: string): Promise<ArticleMeta> {
   const content = await readFile(filePath, 'utf-8')
   const frontmatterMatch = content.match(/^---\n([\s\S]*?)\n---/)
-  if (!frontmatterMatch) return {}
+  const fm = frontmatterMatch?.[1]
+  if (!fm) return {}
 
-  const fm = frontmatterMatch[1]
   const titleMatch = fm.match(/^title:\s*"?([^"\n]+)"?/m)
   const descriptionMatch = fm.match(/^description:\s*"?([^"\n]+)"?/m)
   const dateMatch = fm.match(/^date:\s*"?([^"\n]+)"?/m)

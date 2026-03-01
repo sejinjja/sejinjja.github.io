@@ -44,9 +44,17 @@ const { public: { siteUrl } } = useRuntimeConfig()
 const canonicalUrl = computed(() => `${siteUrl.replace(/\/$/, '')}${route.path}`)
 const description = '실무에서 부딪힌 문제, 해결 과정, 개발 인사이트를 기록한 기술 글 목록입니다.'
 
+function parseDateToTimestamp(dateStr: string): number {
+  const timestamp = Date.parse(dateStr)
+  return Number.isNaN(timestamp) ? Number.NEGATIVE_INFINITY : timestamp
+}
+
 const { data: articleList } = await useAsyncData<WritingListItem[]>(
   'writing:list',
-  () => queryCollection('content').where('path', 'LIKE', '/writing/%').all() as Promise<WritingListItem[]>,
+  () => queryCollection('content')
+    .where('path', 'LIKE', '/writing/%')
+    .select('path', 'title', 'description', 'date', 'tags', 'meta')
+    .all() as Promise<WritingListItem[]>,
 )
 
 const articles = computed(() => {
@@ -63,6 +71,10 @@ const articles = computed(() => {
       if (!a.date && !b.date) return 0
       if (!a.date) return 1
       if (!b.date) return -1
+      const dateDiff = parseDateToTimestamp(b.date) - parseDateToTimestamp(a.date)
+      if (dateDiff !== 0) {
+        return dateDiff
+      }
       return b.date.localeCompare(a.date)
     })
 })

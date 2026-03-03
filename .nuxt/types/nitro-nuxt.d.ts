@@ -3,6 +3,7 @@
 /// <reference path="app.config.d.ts" />
 /// <reference path="runtime-config.d.ts" />
 /// <reference path="../../node_modules/.pnpm/@nuxt+nitro-server@4.3.1_better-sqlite3@12.6.2_db0@0.3.4_better-sqlite3@12.6.2__ioredis@5.9.2_kw7tjee6xk3owndjv6i4iad6mi/node_modules/@nuxt/nitro-server/dist/index.d.mts" />
+/// <reference path="../image/providers.d.ts" />
 /// <reference path="nitro-middleware.d.ts" />
 
 import type { RuntimeConfig } from 'nuxt/schema'

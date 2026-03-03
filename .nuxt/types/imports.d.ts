@@ -3,6 +3,9 @@ export {}
 declare global {
   const abortNavigation: typeof import('../../node_modules/.pnpm/nuxt@4.3.1_@parcel+watcher@2.5.6_@types+node@25.2.2_@vue+compiler-sfc@3.5.28_better-sqlite3@1_z5dnk6vebqy37dmjbay4nes77m/node_modules/nuxt/dist/app/composables/router').abortNavigation
   const addRouteMiddleware: typeof import('../../node_modules/.pnpm/nuxt@4.3.1_@parcel+watcher@2.5.6_@types+node@25.2.2_@vue+compiler-sfc@3.5.28_better-sqlite3@1_z5dnk6vebqy37dmjbay4nes77m/node_modules/nuxt/dist/app/composables/router').addRouteMiddleware
+  const buildSeoState: typeof import('../../utils/seoFormatter').buildSeoState
+  const buildWritingListFilterOptionsFromQuery: typeof import('../../utils/writingList').buildWritingListFilterOptionsFromQuery
+  const buildWritingListQueryParams: typeof import('../../utils/writingList').buildWritingListQueryParams
   const callOnce: typeof import('../../node_modules/.pnpm/nuxt@4.3.1_@parcel+watcher@2.5.6_@types+node@25.2.2_@vue+compiler-sfc@3.5.28_better-sqlite3@1_z5dnk6vebqy37dmjbay4nes77m/node_modules/nuxt/dist/app/composables/once').callOnce
   const cancelIdleCallback: typeof import('../../node_modules/.pnpm/nuxt@4.3.1_@parcel+watcher@2.5.6_@types+node@25.2.2_@vue+compiler-sfc@3.5.28_better-sqlite3@1_z5dnk6vebqy37dmjbay4nes77m/node_modules/nuxt/dist/app/compat/idle-callback').cancelIdleCallback
   const clearError: typeof import('../../node_modules/.pnpm/nuxt@4.3.1_@parcel+watcher@2.5.6_@types+node@25.2.2_@vue+compiler-sfc@3.5.28_better-sqlite3@1_z5dnk6vebqy37dmjbay4nes77m/node_modules/nuxt/dist/app/composables/error').clearError
@@ -25,6 +28,7 @@ declare global {
   const definePayloadReviver: typeof import('../../node_modules/.pnpm/nuxt@4.3.1_@parcel+watcher@2.5.6_@types+node@25.2.2_@vue+compiler-sfc@3.5.28_better-sqlite3@1_z5dnk6vebqy37dmjbay4nes77m/node_modules/nuxt/dist/app/composables/payload').definePayloadReviver
   const effect: typeof import('vue').effect
   const effectScope: typeof import('vue').effectScope
+  const filterWritingList: typeof import('../../utils/writingList').filterWritingList
   const getAppManifest: typeof import('../../node_modules/.pnpm/nuxt@4.3.1_@parcel+watcher@2.5.6_@types+node@25.2.2_@vue+compiler-sfc@3.5.28_better-sqlite3@1_z5dnk6vebqy37dmjbay4nes77m/node_modules/nuxt/dist/app/composables/manifest').getAppManifest
   const getCurrentInstance: typeof import('vue').getCurrentInstance
   const getCurrentScope: typeof import('vue').getCurrentScope
@@ -44,8 +48,11 @@ declare global {
   const isVue3: typeof import('../../node_modules/.pnpm/nuxt@4.3.1_@parcel+watcher@2.5.6_@types+node@25.2.2_@vue+compiler-sfc@3.5.28_better-sqlite3@1_z5dnk6vebqy37dmjbay4nes77m/node_modules/nuxt/dist/app/compat/vue-demi').isVue3
   const loadPayload: typeof import('../../node_modules/.pnpm/nuxt@4.3.1_@parcel+watcher@2.5.6_@types+node@25.2.2_@vue+compiler-sfc@3.5.28_better-sqlite3@1_z5dnk6vebqy37dmjbay4nes77m/node_modules/nuxt/dist/app/composables/payload').loadPayload
   const markRaw: typeof import('vue').markRaw
+  const mergeSeoState: typeof import('../../utils/seoFormatter').mergeSeoState
   const navigateTo: typeof import('../../node_modules/.pnpm/nuxt@4.3.1_@parcel+watcher@2.5.6_@types+node@25.2.2_@vue+compiler-sfc@3.5.28_better-sqlite3@1_z5dnk6vebqy37dmjbay4nes77m/node_modules/nuxt/dist/app/composables/router').navigateTo
   const nextTick: typeof import('vue').nextTick
+  const normalizeSeoKeywords: typeof import('../../utils/seoFormatter').normalizeSeoKeywords
+  const normalizeSeoType: typeof import('../../utils/seoFormatter').normalizeSeoType
   const normalizeWritingList: typeof import('../../utils/writingList').normalizeWritingList
   const onActivated: typeof import('vue').onActivated
   const onBeforeMount: typeof import('vue').onBeforeMount
@@ -116,6 +123,7 @@ declare global {
   const useHeadSafe: typeof import('../../node_modules/.pnpm/nuxt@4.3.1_@parcel+watcher@2.5.6_@types+node@25.2.2_@vue+compiler-sfc@3.5.28_better-sqlite3@1_z5dnk6vebqy37dmjbay4nes77m/node_modules/nuxt/dist/app/composables/head').useHeadSafe
   const useHydration: typeof import('../../node_modules/.pnpm/nuxt@4.3.1_@parcel+watcher@2.5.6_@types+node@25.2.2_@vue+compiler-sfc@3.5.28_better-sqlite3@1_z5dnk6vebqy37dmjbay4nes77m/node_modules/nuxt/dist/app/composables/hydrate').useHydration
   const useId: typeof import('vue').useId
+  const useImage: typeof import('../../node_modules/.pnpm/@nuxt+image@2.0.0_db0@0.3.4_better-sqlite3@12.6.2__ioredis@5.9.2_magicast@0.5.2/node_modules/@nuxt/image/dist/runtime/composables').useImage
   const useLazyAsyncData: typeof import('../../node_modules/.pnpm/nuxt@4.3.1_@parcel+watcher@2.5.6_@types+node@25.2.2_@vue+compiler-sfc@3.5.28_better-sqlite3@1_z5dnk6vebqy37dmjbay4nes77m/node_modules/nuxt/dist/app/composables/asyncData').useLazyAsyncData
   const useLazyFetch: typeof import('../../node_modules/.pnpm/nuxt@4.3.1_@parcel+watcher@2.5.6_@types+node@25.2.2_@vue+compiler-sfc@3.5.28_better-sqlite3@1_z5dnk6vebqy37dmjbay4nes77m/node_modules/nuxt/dist/app/composables/fetch').useLazyFetch
   const useLink: typeof import('vue-router').useLink
@@ -168,6 +176,7 @@ declare global {
   const useScriptXPixel: typeof import('../../node_modules/.pnpm/nuxt@4.3.1_@parcel+watcher@2.5.6_@types+node@25.2.2_@vue+compiler-sfc@3.5.28_better-sqlite3@1_z5dnk6vebqy37dmjbay4nes77m/node_modules/nuxt/dist/app/composables/script-stubs').useScriptXPixel
   const useScriptYouTubePlayer: typeof import('../../node_modules/.pnpm/nuxt@4.3.1_@parcel+watcher@2.5.6_@types+node@25.2.2_@vue+compiler-sfc@3.5.28_better-sqlite3@1_z5dnk6vebqy37dmjbay4nes77m/node_modules/nuxt/dist/app/composables/script-stubs').useScriptYouTubePlayer
   const useSeoMeta: typeof import('../../node_modules/.pnpm/nuxt@4.3.1_@parcel+watcher@2.5.6_@types+node@25.2.2_@vue+compiler-sfc@3.5.28_better-sqlite3@1_z5dnk6vebqy37dmjbay4nes77m/node_modules/nuxt/dist/app/composables/head').useSeoMeta
+  const useSeoState: typeof import('../../composables/useSeoState').useSeoState
   const useServerHead: typeof import('../../node_modules/.pnpm/nuxt@4.3.1_@parcel+watcher@2.5.6_@types+node@25.2.2_@vue+compiler-sfc@3.5.28_better-sqlite3@1_z5dnk6vebqy37dmjbay4nes77m/node_modules/nuxt/dist/app/composables/head').useServerHead
   const useServerHeadSafe: typeof import('../../node_modules/.pnpm/nuxt@4.3.1_@parcel+watcher@2.5.6_@types+node@25.2.2_@vue+compiler-sfc@3.5.28_better-sqlite3@1_z5dnk6vebqy37dmjbay4nes77m/node_modules/nuxt/dist/app/composables/head').useServerHeadSafe
   const useServerSeoMeta: typeof import('../../node_modules/.pnpm/nuxt@4.3.1_@parcel+watcher@2.5.6_@types+node@25.2.2_@vue+compiler-sfc@3.5.28_better-sqlite3@1_z5dnk6vebqy37dmjbay4nes77m/node_modules/nuxt/dist/app/composables/head').useServerSeoMeta
@@ -194,7 +203,10 @@ declare global {
   export type { Component, ComponentPublicInstance, ComputedRef, DirectiveBinding, ExtractDefaultPropTypes, ExtractPropTypes, ExtractPublicPropTypes, InjectionKey, PropType, Ref, MaybeRef, MaybeRefOrGetter, VNode, WritableComputedRef } from 'vue'
   import('vue')
   // @ts-ignore
-  export type { WritingListSourceItem, WritingListResponseItem } from '../../utils/writingList'
+  export type { SeoState, SeoStateInput } from '../../utils/seoFormatter'
+  import('../../utils/seoFormatter')
+  // @ts-ignore
+  export type { WritingListSourceItem, WritingListResponseItem, WritingListFilterOptions } from '../../utils/writingList'
   import('../../utils/writingList')
 }
 // for vue template auto import
@@ -203,6 +215,9 @@ declare module 'vue' {
   interface ComponentCustomProperties {
     readonly abortNavigation: UnwrapRef<typeof import('../../node_modules/.pnpm/nuxt@4.3.1_@parcel+watcher@2.5.6_@types+node@25.2.2_@vue+compiler-sfc@3.5.28_better-sqlite3@1_z5dnk6vebqy37dmjbay4nes77m/node_modules/nuxt/dist/app/composables/router')['abortNavigation']>
     readonly addRouteMiddleware: UnwrapRef<typeof import('../../node_modules/.pnpm/nuxt@4.3.1_@parcel+watcher@2.5.6_@types+node@25.2.2_@vue+compiler-sfc@3.5.28_better-sqlite3@1_z5dnk6vebqy37dmjbay4nes77m/node_modules/nuxt/dist/app/composables/router')['addRouteMiddleware']>
+    readonly buildSeoState: UnwrapRef<typeof import('../../utils/seoFormatter')['buildSeoState']>
+    readonly buildWritingListFilterOptionsFromQuery: UnwrapRef<typeof import('../../utils/writingList')['buildWritingListFilterOptionsFromQuery']>
+    readonly buildWritingListQueryParams: UnwrapRef<typeof import('../../utils/writingList')['buildWritingListQueryParams']>
     readonly callOnce: UnwrapRef<typeof import('../../node_modules/.pnpm/nuxt@4.3.1_@parcel+watcher@2.5.6_@types+node@25.2.2_@vue+compiler-sfc@3.5.28_better-sqlite3@1_z5dnk6vebqy37dmjbay4nes77m/node_modules/nuxt/dist/app/composables/once')['callOnce']>
     readonly cancelIdleCallback: UnwrapRef<typeof import('../../node_modules/.pnpm/nuxt@4.3.1_@parcel+watcher@2.5.6_@types+node@25.2.2_@vue+compiler-sfc@3.5.28_better-sqlite3@1_z5dnk6vebqy37dmjbay4nes77m/node_modules/nuxt/dist/app/compat/idle-callback')['cancelIdleCallback']>
     readonly clearError: UnwrapRef<typeof import('../../node_modules/.pnpm/nuxt@4.3.1_@parcel+watcher@2.5.6_@types+node@25.2.2_@vue+compiler-sfc@3.5.28_better-sqlite3@1_z5dnk6vebqy37dmjbay4nes77m/node_modules/nuxt/dist/app/composables/error')['clearError']>
@@ -225,6 +240,7 @@ declare module 'vue' {
     readonly definePayloadReviver: UnwrapRef<typeof import('../../node_modules/.pnpm/nuxt@4.3.1_@parcel+watcher@2.5.6_@types+node@25.2.2_@vue+compiler-sfc@3.5.28_better-sqlite3@1_z5dnk6vebqy37dmjbay4nes77m/node_modules/nuxt/dist/app/composables/payload')['definePayloadReviver']>
     readonly effect: UnwrapRef<typeof import('vue')['effect']>
     readonly effectScope: UnwrapRef<typeof import('vue')['effectScope']>
+    readonly filterWritingList: UnwrapRef<typeof import('../../utils/writingList')['filterWritingList']>
     readonly getAppManifest: UnwrapRef<typeof import('../../node_modules/.pnpm/nuxt@4.3.1_@parcel+watcher@2.5.6_@types+node@25.2.2_@vue+compiler-sfc@3.5.28_better-sqlite3@1_z5dnk6vebqy37dmjbay4nes77m/node_modules/nuxt/dist/app/composables/manifest')['getAppManifest']>
     readonly getCurrentInstance: UnwrapRef<typeof import('vue')['getCurrentInstance']>
     readonly getCurrentScope: UnwrapRef<typeof import('vue')['getCurrentScope']>
@@ -244,8 +260,11 @@ declare module 'vue' {
     readonly isVue3: UnwrapRef<typeof import('../../node_modules/.pnpm/nuxt@4.3.1_@parcel+watcher@2.5.6_@types+node@25.2.2_@vue+compiler-sfc@3.5.28_better-sqlite3@1_z5dnk6vebqy37dmjbay4nes77m/node_modules/nuxt/dist/app/compat/vue-demi')['isVue3']>
     readonly loadPayload: UnwrapRef<typeof import('../../node_modules/.pnpm/nuxt@4.3.1_@parcel+watcher@2.5.6_@types+node@25.2.2_@vue+compiler-sfc@3.5.28_better-sqlite3@1_z5dnk6vebqy37dmjbay4nes77m/node_modules/nuxt/dist/app/composables/payload')['loadPayload']>
     readonly markRaw: UnwrapRef<typeof import('vue')['markRaw']>
+    readonly mergeSeoState: UnwrapRef<typeof import('../../utils/seoFormatter')['mergeSeoState']>
     readonly navigateTo: UnwrapRef<typeof import('../../node_modules/.pnpm/nuxt@4.3.1_@parcel+watcher@2.5.6_@types+node@25.2.2_@vue+compiler-sfc@3.5.28_better-sqlite3@1_z5dnk6vebqy37dmjbay4nes77m/node_modules/nuxt/dist/app/composables/router')['navigateTo']>
     readonly nextTick: UnwrapRef<typeof import('vue')['nextTick']>
+    readonly normalizeSeoKeywords: UnwrapRef<typeof import('../../utils/seoFormatter')['normalizeSeoKeywords']>
+    readonly normalizeSeoType: UnwrapRef<typeof import('../../utils/seoFormatter')['normalizeSeoType']>
     readonly normalizeWritingList: UnwrapRef<typeof import('../../utils/writingList')['normalizeWritingList']>
     readonly onActivated: UnwrapRef<typeof import('vue')['onActivated']>
     readonly onBeforeMount: UnwrapRef<typeof import('vue')['onBeforeMount']>
@@ -316,6 +335,7 @@ declare module 'vue' {
     readonly useHeadSafe: UnwrapRef<typeof import('../../node_modules/.pnpm/nuxt@4.3.1_@parcel+watcher@2.5.6_@types+node@25.2.2_@vue+compiler-sfc@3.5.28_better-sqlite3@1_z5dnk6vebqy37dmjbay4nes77m/node_modules/nuxt/dist/app/composables/head')['useHeadSafe']>
     readonly useHydration: UnwrapRef<typeof import('../../node_modules/.pnpm/nuxt@4.3.1_@parcel+watcher@2.5.6_@types+node@25.2.2_@vue+compiler-sfc@3.5.28_better-sqlite3@1_z5dnk6vebqy37dmjbay4nes77m/node_modules/nuxt/dist/app/composables/hydrate')['useHydration']>
     readonly useId: UnwrapRef<typeof import('vue')['useId']>
+    readonly useImage: UnwrapRef<typeof import('../../node_modules/.pnpm/@nuxt+image@2.0.0_db0@0.3.4_better-sqlite3@12.6.2__ioredis@5.9.2_magicast@0.5.2/node_modules/@nuxt/image/dist/runtime/composables')['useImage']>
     readonly useLazyAsyncData: UnwrapRef<typeof import('../../node_modules/.pnpm/nuxt@4.3.1_@parcel+watcher@2.5.6_@types+node@25.2.2_@vue+compiler-sfc@3.5.28_better-sqlite3@1_z5dnk6vebqy37dmjbay4nes77m/node_modules/nuxt/dist/app/composables/asyncData')['useLazyAsyncData']>
     readonly useLazyFetch: UnwrapRef<typeof import('../../node_modules/.pnpm/nuxt@4.3.1_@parcel+watcher@2.5.6_@types+node@25.2.2_@vue+compiler-sfc@3.5.28_better-sqlite3@1_z5dnk6vebqy37dmjbay4nes77m/node_modules/nuxt/dist/app/composables/fetch')['useLazyFetch']>
     readonly useLink: UnwrapRef<typeof import('vue-router')['useLink']>
@@ -368,6 +388,7 @@ declare module 'vue' {
     readonly useScriptXPixel: UnwrapRef<typeof import('../../node_modules/.pnpm/nuxt@4.3.1_@parcel+watcher@2.5.6_@types+node@25.2.2_@vue+compiler-sfc@3.5.28_better-sqlite3@1_z5dnk6vebqy37dmjbay4nes77m/node_modules/nuxt/dist/app/composables/script-stubs')['useScriptXPixel']>
     readonly useScriptYouTubePlayer: UnwrapRef<typeof import('../../node_modules/.pnpm/nuxt@4.3.1_@parcel+watcher@2.5.6_@types+node@25.2.2_@vue+compiler-sfc@3.5.28_better-sqlite3@1_z5dnk6vebqy37dmjbay4nes77m/node_modules/nuxt/dist/app/composables/script-stubs')['useScriptYouTubePlayer']>
     readonly useSeoMeta: UnwrapRef<typeof import('../../node_modules/.pnpm/nuxt@4.3.1_@parcel+watcher@2.5.6_@types+node@25.2.2_@vue+compiler-sfc@3.5.28_better-sqlite3@1_z5dnk6vebqy37dmjbay4nes77m/node_modules/nuxt/dist/app/composables/head')['useSeoMeta']>
+    readonly useSeoState: UnwrapRef<typeof import('../../composables/useSeoState')['useSeoState']>
     readonly useServerHead: UnwrapRef<typeof import('../../node_modules/.pnpm/nuxt@4.3.1_@parcel+watcher@2.5.6_@types+node@25.2.2_@vue+compiler-sfc@3.5.28_better-sqlite3@1_z5dnk6vebqy37dmjbay4nes77m/node_modules/nuxt/dist/app/composables/head')['useServerHead']>
     readonly useServerHeadSafe: UnwrapRef<typeof import('../../node_modules/.pnpm/nuxt@4.3.1_@parcel+watcher@2.5.6_@types+node@25.2.2_@vue+compiler-sfc@3.5.28_better-sqlite3@1_z5dnk6vebqy37dmjbay4nes77m/node_modules/nuxt/dist/app/composables/head')['useServerHeadSafe']>
     readonly useServerSeoMeta: UnwrapRef<typeof import('../../node_modules/.pnpm/nuxt@4.3.1_@parcel+watcher@2.5.6_@types+node@25.2.2_@vue+compiler-sfc@3.5.28_better-sqlite3@1_z5dnk6vebqy37dmjbay4nes77m/node_modules/nuxt/dist/app/composables/head')['useServerSeoMeta']>

@@ -1,7 +1,13 @@
-import { computed, toValue, type ComputedRef, type Ref } from 'vue'
+import { computed, toValue, watchEffect, type ComputedRef, type Ref } from 'vue'
 import { useHead, useRoute, useRuntimeConfig, useSeoMeta } from '#imports'
-
-type SeoType = 'website' | 'article'
+import {
+  DEFAULT_OG_LOCALE,
+  DEFAULT_TWITTER_CARD,
+  SEO_TYPE_WEBSITE,
+  SITE_URL,
+  type SeoType,
+} from '~/constants/seo'
+import { useSeoState } from '~/composables/useSeoState'
 
 interface UsePageSeoOptions {
   title: string | Ref<string> | ComputedRef<string> | (() => string)
@@ -18,13 +24,25 @@ function normalizeSiteUrl(url: string): string {
 export function usePageSeo(options: UsePageSeoOptions): void {
   const route = useRoute()
   const { public: { siteUrl } } = useRuntimeConfig()
+  const { setSeo } = useSeoState()
 
-  const canonicalUrl = computed(() => `${normalizeSiteUrl(siteUrl || 'https://sejinjja.github.io')}${route.path}`)
+  const canonicalUrl = computed(() => `${normalizeSiteUrl(siteUrl || SITE_URL)}${route.path}`)
 
   const resolvedTitle = computed(() => toValue(options.title))
   const resolvedDescription = computed(() => toValue(options.description))
   const resolvedOgTitle = computed(() => toValue(options.ogTitle ?? options.title))
-  const resolvedOgType = computed(() => toValue(options.ogType ?? 'website'))
+  const resolvedOgType = computed(() => toValue(options.ogType ?? SEO_TYPE_WEBSITE))
+
+  watchEffect(() => {
+    setSeo({
+      title: resolvedTitle.value,
+      description: resolvedDescription.value,
+      ogTitle: resolvedOgTitle.value,
+      ogDescription: resolvedDescription.value,
+      type: resolvedOgType.value,
+      canonicalPath: route.path,
+    })
+  })
 
   useSeoMeta({
     title: resolvedTitle,
@@ -33,8 +51,8 @@ export function usePageSeo(options: UsePageSeoOptions): void {
     ogDescription: resolvedDescription,
     ogType: resolvedOgType,
     ogUrl: canonicalUrl,
-    ogLocale: 'ko_KR',
-    twitterCard: 'summary_large_image',
+    ogLocale: DEFAULT_OG_LOCALE,
+    twitterCard: DEFAULT_TWITTER_CARD,
   })
 
   useHead(() => {

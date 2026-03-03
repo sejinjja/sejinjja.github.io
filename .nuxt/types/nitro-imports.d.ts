@@ -127,6 +127,7 @@ declare global {
   const useAppConfig: typeof import('../../node_modules/.pnpm/nitropack@2.13.1_better-sqlite3@12.6.2/node_modules/nitropack/dist/runtime/internal/config').useAppConfig
   const useBase: typeof import('../../node_modules/.pnpm/h3@1.15.5/node_modules/h3').useBase
   const useEvent: typeof import('../../node_modules/.pnpm/nitropack@2.13.1_better-sqlite3@12.6.2/node_modules/nitropack/dist/runtime/internal/context').useEvent
+  const useImage: typeof import('../../node_modules/.pnpm/@nuxt+image@2.0.0_db0@0.3.4_better-sqlite3@12.6.2__ioredis@5.9.2_magicast@0.5.2/node_modules/@nuxt/image/dist/runtime/server/utils/image').useImage
   const useNitroApp: typeof import('../../node_modules/.pnpm/nitropack@2.13.1_better-sqlite3@12.6.2/node_modules/nitropack/dist/runtime/internal/app').useNitroApp
   const useRuntimeConfig: typeof import('../../node_modules/.pnpm/nitropack@2.13.1_better-sqlite3@12.6.2/node_modules/nitropack/dist/runtime/internal/config').useRuntimeConfig
   const useSession: typeof import('../../node_modules/.pnpm/h3@1.15.5/node_modules/h3').useSession
@@ -154,5 +155,6 @@ export { defineNitroErrorHandler } from 'nitropack/runtime/internal/error/utils'
 export { buildAssetsURL as __buildAssetsURL, publicAssetsURL as __publicAssetsURL } from 'C:/Users/sejiwork/subProject/sejinjja.github.io/node_modules/.pnpm/@nuxt+nitro-server@4.3.1_better-sqlite3@12.6.2_db0@0.3.4_better-sqlite3@12.6.2__ioredis@5.9.2_kw7tjee6xk3owndjv6i4iad6mi/node_modules/@nuxt/nitro-server/dist/runtime/utils/paths';
 export { defineAppConfig } from 'C:/Users/sejiwork/subProject/sejinjja.github.io/node_modules/.pnpm/@nuxt+nitro-server@4.3.1_better-sqlite3@12.6.2_db0@0.3.4_better-sqlite3@12.6.2__ioredis@5.9.2_kw7tjee6xk3owndjv6i4iad6mi/node_modules/@nuxt/nitro-server/dist/runtime/utils/config';
 export { queryCollection, queryCollectionSearchSections, queryCollectionNavigation, queryCollectionItemSurroundings } from 'C:/Users/sejiwork/subProject/sejinjja.github.io/node_modules/.pnpm/@nuxt+content@3.11.2_better-sqlite3@12.6.2_magicast@0.5.2/node_modules/@nuxt/content/dist/runtime/nitro';
+export { useImage } from 'C:/Users/sejiwork/subProject/sejinjja.github.io/node_modules/.pnpm/@nuxt+image@2.0.0_db0@0.3.4_better-sqlite3@12.6.2__ioredis@5.9.2_magicast@0.5.2/node_modules/@nuxt/image/dist/runtime/server/utils/image';
 export { parseMarkdown } from 'C:/Users/sejiwork/subProject/sejinjja.github.io/node_modules/.pnpm/@nuxtjs+mdc@0.20.1_magicast@0.5.2/node_modules/@nuxtjs/mdc/dist/runtime/parser';
 export { stringifyMarkdown } from 'C:/Users/sejiwork/subProject/sejinjja.github.io/node_modules/.pnpm/@nuxtjs+mdc@0.20.1_magicast@0.5.2/node_modules/@nuxtjs/mdc/dist/runtime/stringify';

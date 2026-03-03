@@ -20,6 +20,7 @@ const SEO_FILES = [
   'pages/projects.vue',
   'pages/work-schedule-manager.vue',
   'pages/writing/index.vue',
+  'pages/writing/[...slug].vue',
 ]
 
 function readSource(relativePath: string): string {

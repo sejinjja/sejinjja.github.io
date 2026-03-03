@@ -1,0 +1,38 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    background-color: #ffffff;
+    color: #0f172a;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  .dark body {
+    background-color: #0b1120;
+    color: #d8e0ec;
+  }
+
+  ::selection {
+    background-color: rgba(34, 211, 238, 0.35);
+    color: #0b1120;
+  }
+
+  .dark ::selection {
+    background-color: rgba(34, 211, 238, 0.3);
+    color: #ecfeff;
+  }
+
+  :where(a, button, [role='button'], input, textarea, select):focus-visible {
+    outline: 2px solid #06b6d4;
+    outline-offset: 2px;
+    border-radius: 0.5rem;
+  }
+
+  .dark :where(a, button, [role='button'], input, textarea, select):focus-visible {
+    outline-color: #67e8f9;
+  }
+}

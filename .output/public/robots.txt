@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://sejinjja.github.io/sitemap.xml

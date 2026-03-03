@@ -1,0 +1,1 @@
+import{_ as t,o as r,c as n,i as a}from"./Br-wc9Eg.js";const o={},s={class:"inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary-100 dark:bg-primary-900/40 text-primary-700 dark:text-primary-300"};function c(e,_){return r(),n("span",s,[a(e.$slots,"default")])}const i=Object.assign(t(o,[["render",c]]),{__name:"CommonBadgeTag"});export{i as _};

@@ -1,0 +1,70 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches:
+      - master
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Typecheck
+        run: pnpm typecheck
+
+      - name: Sync Notion posts
+        run: pnpm notion:sync
+        continue-on-error: true
+        env:
+          NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
+          NOTION_API_KEY: ${{ secrets.NOTION_API_KEY }}
+          NOTION_DATABASE_ID: ${{ secrets.NOTION_DATABASE_ID }}
+          NOTION_DATA_SOURCE_ID: ${{ secrets.NOTION_DATA_SOURCE_ID || vars.NOTION_DATA_SOURCE_ID }}
+          NOTION_TITLE_PROPERTY: ${{ vars.NOTION_TITLE_PROPERTY }}
+          NOTION_SLUG_PROPERTY: ${{ vars.NOTION_SLUG_PROPERTY }}
+          NOTION_DESCRIPTION_PROPERTY: ${{ vars.NOTION_DESCRIPTION_PROPERTY }}
+          NOTION_DATE_PROPERTY: ${{ vars.NOTION_DATE_PROPERTY }}
+          NOTION_TAGS_PROPERTY: ${{ vars.NOTION_TAGS_PROPERTY }}
+          NOTION_PUBLISHED_PROPERTY: ${{ vars.NOTION_PUBLISHED_PROPERTY }}
+
+      - name: Generate static site
+        run: pnpm generate
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: .output/public
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

@@ -5,6 +5,8 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import {
   WRITING_CONTENT_COLLECTION,
   WRITING_LIST_QUERY_FIELDS,
+  WRITING_LIST_SEARCH_QUERY_PARAM,
+  WRITING_LIST_TAG_QUERY_PARAM,
   WRITING_PATH_LIKE_PATTERN,
 } from '~/constants/writing'
 
@@ -16,9 +18,11 @@ interface ListQueryBuilder {
 
 const defineEventHandlerMock = vi.fn((handler) => handler)
 const queryCollectionMock = vi.fn()
+const getQueryMock = vi.fn((event: { query?: Record<string, unknown> }) => event.query ?? {})
 
 vi.stubGlobal('defineEventHandler', defineEventHandlerMock)
 vi.stubGlobal('queryCollection', queryCollectionMock)
+vi.stubGlobal('getQuery', getQueryMock)
 
 const ROOT_DIR = process.cwd()
 const WRITING_INDEX_OUTPUT_PATH = resolve(ROOT_DIR, '.output/public/writing/index.html')
@@ -48,6 +52,7 @@ const listHandlerPromise = import('./list.get').then((module) => module.default 
 describe('server/api/writing/list.get', () => {
   beforeEach(() => {
     queryCollectionMock.mockReset()
+    getQueryMock.mockClear()
   })
 
   it('returns mapped writing list items and excludes base writing path', async () => {
@@ -129,6 +134,53 @@ describe('server/api/writing/list.get', () => {
       '/writing/newer',
       '/writing/older',
       '/writing/without-date',
+    ])
+  })
+
+  it('filters by search query and tag query params', async () => {
+    const event = {
+      query: {
+        [WRITING_LIST_SEARCH_QUERY_PARAM]: 'meta',
+        [WRITING_LIST_TAG_QUERY_PARAM]: 'typescript',
+      },
+    }
+    const queryBuilder = createListQueryBuilder([
+      {
+        path: '/writing/first-post',
+        title: 'First Post',
+        description: 'Direct description',
+        tags: ['nuxt'],
+      },
+      {
+        path: '/writing/second-post',
+        title: 'Second Post',
+        meta: {
+          description: 'Meta description',
+          tags: ['typescript'],
+        },
+      },
+      {
+        path: '/writing/third-post',
+        title: 'Third Post',
+        description: 'Meta description but wrong tag',
+        tags: ['javascript'],
+      },
+    ])
+
+    queryCollectionMock.mockReturnValue(queryBuilder)
+
+    const handler = await listHandlerPromise
+    const result = await handler(event)
+
+    expect(getQueryMock).toHaveBeenCalledWith(event)
+    expect(result).toEqual([
+      {
+        path: '/writing/second-post',
+        title: 'Second Post',
+        description: 'Meta description',
+        date: '',
+        tags: ['typescript'],
+      },
     ])
   })
 

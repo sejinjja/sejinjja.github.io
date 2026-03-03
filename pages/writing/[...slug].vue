@@ -2,9 +2,9 @@
   <div class="max-w-3xl mx-auto px-6 py-16">
     <article v-if="article">
       <header class="mb-10">
-        <NuxtLink to="/writing" class="inline-flex items-center gap-1 text-sm text-gray-400 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-300 transition-colors mb-6">
+        <NuxtLink :to="WRITING_BASE_PATH" class="inline-flex items-center gap-1 text-sm text-gray-400 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-300 transition-colors mb-6">
           <Icon name="heroicons:arrow-left" class="w-4 h-4" aria-hidden="true" />
-          글 목록으로
+          {{ WRITING_DETAIL_BACK_LINK_LABEL }}
         </NuxtLink>
         <time class="block text-sm text-gray-400 mb-2">{{ articleDate }}</time>
         <h1 class="text-3xl font-bold text-gray-900 dark:text-gray-100 leading-tight mb-4">{{ article.title }}</h1>
@@ -21,6 +21,25 @@
 </template>
 
 <script setup lang="ts">
+import { usePageSeo } from '~/composables/usePageSeo'
+import { SEO_TYPE_ARTICLE } from '~/constants/seo'
+import {
+  WRITING_BASE_PATH,
+  WRITING_CONTENT_COLLECTION,
+  WRITING_DETAIL_ASYNC_DATA_KEY_PREFIX,
+  WRITING_DETAIL_BACK_LINK_LABEL,
+  WRITING_DETAIL_DEFAULT_DESCRIPTION,
+  WRITING_DETAIL_FALLBACK_TITLE,
+  WRITING_DETAIL_JSON_LD_AUTHOR_NAME,
+  WRITING_DETAIL_JSON_LD_AUTHOR_URL,
+  WRITING_DETAIL_JSON_LD_CONTEXT,
+  WRITING_DETAIL_JSON_LD_PERSON_TYPE,
+  WRITING_DETAIL_JSON_LD_PUBLISHER_NAME,
+  WRITING_DETAIL_JSON_LD_TYPE,
+  WRITING_NOT_FOUND_MESSAGE,
+  WRITING_NOT_FOUND_STATUS_CODE,
+} from '~/constants/writing'
+
 interface WritingDoc {
   path: string
   title?: string
@@ -36,20 +55,16 @@ interface WritingDoc {
 }
 
 const route = useRoute()
-const { public: { siteUrl } } = useRuntimeConfig()
-
-const canonicalUrl = computed(() => `${siteUrl.replace(/\/$/, '')}${route.path}`)
-const defaultDescription = '실무에서 부딪힌 문제를 구조적으로 해결한 과정을 기록한 글입니다.'
 
 const { data: article } = await useAsyncData<WritingDoc | null>(
-  `writing:meta:${route.path}`,
-  () => queryCollection('content').path(route.path).first() as Promise<WritingDoc | null>,
+  `${WRITING_DETAIL_ASYNC_DATA_KEY_PREFIX}${route.path}`,
+  () => queryCollection(WRITING_CONTENT_COLLECTION).path(route.path).first() as Promise<WritingDoc | null>,
 )
 
 if (!article.value) {
   throw createError({
-    statusCode: 404,
-    statusMessage: 'Post not found',
+    statusCode: WRITING_NOT_FOUND_STATUS_CODE,
+    statusMessage: WRITING_NOT_FOUND_MESSAGE,
   })
 }
 
@@ -57,44 +72,29 @@ const articleDescription = computed(() => article.value?.description || article.
 const articleDate = computed(() => article.value?.date || article.value?.meta?.date || '')
 const articleTags = computed(() => article.value?.tags || article.value?.meta?.tags || [])
 
-const seoTitle = computed(() => article.value?.title || '글')
-const seoDescription = computed(() => articleDescription.value || defaultDescription)
+const seoTitle = computed(() => article.value?.title || WRITING_DETAIL_FALLBACK_TITLE)
+const seoDescription = computed(() => articleDescription.value || WRITING_DETAIL_DEFAULT_DESCRIPTION)
+const jsonLd = computed(() => ({
+  '@context': WRITING_DETAIL_JSON_LD_CONTEXT,
+  '@type': WRITING_DETAIL_JSON_LD_TYPE,
+  headline: article.value?.title,
+  description: articleDescription.value || undefined,
+  datePublished: articleDate.value || undefined,
+  author: {
+    '@type': WRITING_DETAIL_JSON_LD_PERSON_TYPE,
+    name: WRITING_DETAIL_JSON_LD_AUTHOR_NAME,
+    url: WRITING_DETAIL_JSON_LD_AUTHOR_URL,
+  },
+  publisher: {
+    '@type': WRITING_DETAIL_JSON_LD_PERSON_TYPE,
+    name: WRITING_DETAIL_JSON_LD_PUBLISHER_NAME,
+  },
+}))
 
-useSeoMeta({
+usePageSeo({
   title: seoTitle,
   description: seoDescription,
-  ogTitle: seoTitle,
-  ogDescription: seoDescription,
-  ogType: 'article',
-  ogUrl: canonicalUrl,
-  ogLocale: 'ko_KR',
-  twitterCard: 'summary_large_image',
+  ogType: SEO_TYPE_ARTICLE,
+  jsonLd,
 })
-
-useHead(() => ({
-  title: seoTitle.value,
-  link: [{ rel: 'canonical', href: canonicalUrl.value }],
-  script: [
-    {
-      type: 'application/ld+json',
-      innerHTML: JSON.stringify({
-        '@context': 'https://schema.org',
-        '@type': 'BlogPosting',
-        headline: article.value?.title,
-        description: articleDescription.value || undefined,
-        datePublished: articleDate.value || undefined,
-        url: canonicalUrl.value,
-        author: {
-          '@type': 'Person',
-          name: '조세진',
-          url: 'https://sejinjja.github.io',
-        },
-        publisher: {
-          '@type': 'Person',
-          name: '조세진',
-        },
-      }),
-    },
-  ],
-}))
 </script>

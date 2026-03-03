@@ -122,7 +122,7 @@
         "./mdc-imports"
       ],
       "#app-manifest": [
-        "./manifest/meta/4ddc0f8f-1e2e-4687-9268-958841cb2186.json"
+        "./manifest/meta/c9bf8f3a-0bfa-4a1e-8c99-9e985a82b988.json"
       ],
       "#components": [
         "./components"
@@ -192,6 +192,8 @@
     "../node_modules/.pnpm/@nuxtjs+tailwindcss@6.14.0_magicast@0.5.2_yaml@2.8.2/node_modules/dist/runtime",
     "../node_modules/.pnpm/@nuxt+content@3.11.2_better-sqlite3@12.6.2_magicast@0.5.2/node_modules/runtime",
     "../node_modules/.pnpm/@nuxt+content@3.11.2_better-sqlite3@12.6.2_magicast@0.5.2/node_modules/dist/runtime",
+    "../node_modules/.pnpm/@nuxt+image@2.0.0_db0@0.3.4_better-sqlite3@12.6.2__ioredis@5.9.2_magicast@0.5.2/node_modules/runtime",
+    "../node_modules/.pnpm/@nuxt+image@2.0.0_db0@0.3.4_better-sqlite3@12.6.2__ioredis@5.9.2_magicast@0.5.2/node_modules/dist/runtime",
     "../node_modules/.pnpm/@nuxt+icon@2.2.1_magicast@0.5.2_vite@7.3.1_@types+node@25.2.2_jiti@2.6.1_lightningcss@1.30.2__4klwsklie2nljpx6anruufekla/node_modules/runtime",
     "../node_modules/.pnpm/@nuxt+icon@2.2.1_magicast@0.5.2_vite@7.3.1_@types+node@25.2.2_jiti@2.6.1_lightningcss@1.30.2__4klwsklie2nljpx6anruufekla/node_modules/dist/runtime",
     "../node_modules/.pnpm/@nuxtjs+color-mode@4.0.0_magicast@0.5.2/node_modules/runtime",
@@ -209,6 +211,7 @@
     "../node_modules/.pnpm/@nuxt+eslint@1.15.2_@typescript-eslint+utils@8.56.1_eslint@9.39.3_jiti@2.6.1__typescript@5.9._cgcrfiqjjez37x46qdx2ugmaqu/node_modules/@nuxt/eslint/node_modules",
     "../node_modules/.pnpm/@nuxtjs+tailwindcss@6.14.0_magicast@0.5.2_yaml@2.8.2/node_modules/@nuxtjs/tailwindcss/node_modules",
     "../node_modules/.pnpm/@nuxt+content@3.11.2_better-sqlite3@12.6.2_magicast@0.5.2/node_modules/@nuxt/content/node_modules",
+    "../node_modules/.pnpm/@nuxt+image@2.0.0_db0@0.3.4_better-sqlite3@12.6.2__ioredis@5.9.2_magicast@0.5.2/node_modules/@nuxt/image/node_modules",
     "../node_modules/.pnpm/@nuxt+icon@2.2.1_magicast@0.5.2_vite@7.3.1_@types+node@25.2.2_jiti@2.6.1_lightningcss@1.30.2__4klwsklie2nljpx6anruufekla/node_modules/@nuxt/icon/node_modules",
     "../node_modules/.pnpm/@nuxtjs+color-mode@4.0.0_magicast@0.5.2/node_modules/@nuxtjs/color-mode/node_modules",
     "../node_modules/.pnpm/@nuxt+devtools@3.1.1_vite@7.3.1_@types+node@25.2.2_jiti@2.6.1_lightningcss@1.30.2_terser@5.46_oqwuvdhishhtel6gzldlxylvsm/node_modules/@nuxt/devtools/node_modules",
@@ -225,6 +228,8 @@
     "../node_modules/.pnpm/@nuxtjs+tailwindcss@6.14.0_magicast@0.5.2_yaml@2.8.2/node_modules/dist/runtime/server",
     "../node_modules/.pnpm/@nuxt+content@3.11.2_better-sqlite3@12.6.2_magicast@0.5.2/node_modules/runtime/server",
     "../node_modules/.pnpm/@nuxt+content@3.11.2_better-sqlite3@12.6.2_magicast@0.5.2/node_modules/dist/runtime/server",
+    "../node_modules/.pnpm/@nuxt+image@2.0.0_db0@0.3.4_better-sqlite3@12.6.2__ioredis@5.9.2_magicast@0.5.2/node_modules/runtime/server",
+    "../node_modules/.pnpm/@nuxt+image@2.0.0_db0@0.3.4_better-sqlite3@12.6.2__ioredis@5.9.2_magicast@0.5.2/node_modules/dist/runtime/server",
     "../node_modules/.pnpm/@nuxt+icon@2.2.1_magicast@0.5.2_vite@7.3.1_@types+node@25.2.2_jiti@2.6.1_lightningcss@1.30.2__4klwsklie2nljpx6anruufekla/node_modules/runtime/server",
     "../node_modules/.pnpm/@nuxt+icon@2.2.1_magicast@0.5.2_vite@7.3.1_@types+node@25.2.2_jiti@2.6.1_lightningcss@1.30.2__4klwsklie2nljpx6anruufekla/node_modules/dist/runtime/server",
     "../node_modules/.pnpm/@nuxtjs+color-mode@4.0.0_magicast@0.5.2/node_modules/runtime/server",

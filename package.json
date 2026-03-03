@@ -26,6 +26,7 @@
     "@nuxt/content": "^3.11.2",
     "@nuxt/eslint": "^1.15.2",
     "@nuxt/icon": "^2.2.1",
+    "@nuxt/image": "^2.0.0",
     "@nuxtjs/tailwindcss": "^6.13.0",
     "@tailwindcss/typography": "^0.5.19",
     "@types/node": "^25.2.2",

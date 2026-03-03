@@ -1,5 +1,14 @@
 import { readdirSync } from 'node:fs'
 import { resolve } from 'node:path'
+import {
+  DEFAULT_META_DESCRIPTION,
+  DEFAULT_SEO_TITLE,
+  SEO_DEFAULT_IMAGE_QUALITY,
+  SEO_IMAGE_FORMAT_AVIF,
+  SEO_IMAGE_FORMAT_WEBP,
+  SEO_IMAGE_SCREENS,
+  SITE_URL,
+} from './constants/seo'
 
 const writingContentDir = resolve(process.cwd(), 'content', 'writing')
 const writingRoutes = (() => {
@@ -28,9 +37,16 @@ export default defineNuxtConfig({
     '@nuxt/eslint',
     '@nuxtjs/tailwindcss',
     '@nuxt/content',
+    '@nuxt/image',
     '@nuxt/icon',
     '@nuxtjs/color-mode',
   ],
+
+  image: {
+    format: [SEO_IMAGE_FORMAT_AVIF, SEO_IMAGE_FORMAT_WEBP],
+    quality: SEO_DEFAULT_IMAGE_QUALITY,
+    screens: SEO_IMAGE_SCREENS,
+  },
 
   colorMode: {
     preference: 'system',
@@ -40,18 +56,18 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     public: {
-      siteUrl: 'https://sejinjja.github.io',
+      siteUrl: SITE_URL,
     },
   },
 
   app: {
     head: {
-      title: '조세진 | 프런트엔드/웹 개발자',
+      title: DEFAULT_SEO_TITLE,
       htmlAttrs: { lang: 'ko' },
       meta: [
         { charset: 'utf-8' },
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-        { name: 'description', content: '실무에서 통하는 정확함과 구조화된 사고로 문제를 끝까지 해결하는 프런트엔드/웹 개발자 조세진입니다.' },
+        { name: 'description', content: DEFAULT_META_DESCRIPTION },
       ],
       link: [
         { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' },

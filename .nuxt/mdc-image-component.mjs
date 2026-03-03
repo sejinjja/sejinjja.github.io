@@ -1,1 +1,1 @@
-export default "img"
+export { default } from "C:/Users/sejiwork/subProject/sejinjja.github.io/node_modules/.pnpm/@nuxt+image@2.0.0_db0@0.3.4_better-sqlite3@12.6.2__ioredis@5.9.2_magicast@0.5.2/node_modules/@nuxt/image/dist/runtime/components/NuxtImg.vue"

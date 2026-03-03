@@ -4,6 +4,8 @@ import {
   WRITING_PATH_LIKE_PATTERN,
 } from '~/constants/writing'
 import {
+  buildWritingListFilterOptionsFromQuery,
+  filterWritingList,
   normalizeWritingList,
   type WritingListResponseItem,
   type WritingListSourceItem,
@@ -16,5 +18,8 @@ export default defineEventHandler(async (event): Promise<WritingListResponseItem
     .select(...WRITING_LIST_QUERY_FIELDS)
     .all() as WritingListSourceItem[]
 
-  return normalizeWritingList(list)
+  const normalizedList = normalizeWritingList(list)
+  const filters = buildWritingListFilterOptionsFromQuery(getQuery(event))
+
+  return filterWritingList(normalizedList, filters)
 })

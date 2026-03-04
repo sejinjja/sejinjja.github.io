@@ -4,11 +4,19 @@ import { execSync } from 'node:child_process'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import {
   WRITING_CONTENT_COLLECTION,
+  WRITING_LIST_DEFAULT_PAGE,
+  WRITING_LIST_PAGE_OUT_OF_RANGE_MESSAGE,
+  WRITING_LIST_PAGE_OUT_OF_RANGE_STATUS_CODE,
+  WRITING_LIST_PAGE_QUERY_PARAM,
+  WRITING_LIST_PAGE_SIZE_QUERY_PARAM,
   WRITING_LIST_QUERY_FIELDS,
   WRITING_LIST_SEARCH_QUERY_PARAM,
+  WRITING_LIST_SORT_OLDEST,
+  WRITING_LIST_SORT_QUERY_PARAM,
   WRITING_LIST_TAG_QUERY_PARAM,
   WRITING_PATH_LIKE_PATTERN,
 } from '~/constants/writing'
+import type { WritingListApiResponse } from '~/utils/writingList'
 
 interface ListQueryBuilder {
   where: ReturnType<typeof vi.fn>
@@ -18,11 +26,30 @@ interface ListQueryBuilder {
 
 const defineEventHandlerMock = vi.fn((handler) => handler)
 const queryCollectionMock = vi.fn()
-const getQueryMock = vi.fn((event: { query?: Record<string, unknown> }) => event.query ?? {})
+const getValidatedQueryMock = vi.fn(async (
+  event: { query?: Record<string, unknown> },
+  validate: (query: unknown) => Record<string, unknown>,
+) => validate(event.query ?? {}))
+const createErrorMock = vi.fn((payload: { statusCode: number, statusMessage: string, data?: unknown }) => {
+  const error = new Error(payload.statusMessage) as Error & {
+    statusCode: number
+    statusMessage: string
+    data?: unknown
+  }
+
+  error.statusCode = payload.statusCode
+  error.statusMessage = payload.statusMessage
+  if (payload.data !== undefined) {
+    error.data = payload.data
+  }
+
+  return error
+})
 
 vi.stubGlobal('defineEventHandler', defineEventHandlerMock)
 vi.stubGlobal('queryCollection', queryCollectionMock)
-vi.stubGlobal('getQuery', getQueryMock)
+vi.stubGlobal('getValidatedQuery', getValidatedQueryMock)
+vi.stubGlobal('createError', createErrorMock)
 
 const ROOT_DIR = process.cwd()
 const WRITING_INDEX_OUTPUT_PATH = resolve(ROOT_DIR, '.output/public/writing/index.html')
@@ -41,21 +68,16 @@ function createListQueryBuilder(items: unknown[]): ListQueryBuilder {
   return builder
 }
 
-const listHandlerPromise = import('./list.get').then((module) => module.default as (event: unknown) => Promise<Array<{
-  path: string
-  title: string
-  description: string
-  date: string
-  tags: string[]
-}>>)
+const listHandlerPromise = import('./list.get').then((module) => module.default as (event: unknown) => Promise<WritingListApiResponse>)
 
 describe('server/api/writing/list.get', () => {
   beforeEach(() => {
     queryCollectionMock.mockReset()
-    getQueryMock.mockClear()
+    getValidatedQueryMock.mockClear()
+    createErrorMock.mockClear()
   })
 
-  it('returns mapped writing list items and excludes base writing path', async () => {
+  it('returns mapped items with pagination and excludes base writing path', async () => {
     const event = {}
     const queryBuilder = createListQueryBuilder([
       {
@@ -88,25 +110,34 @@ describe('server/api/writing/list.get', () => {
     expect(queryCollectionMock).toHaveBeenCalledWith(event, WRITING_CONTENT_COLLECTION)
     expect(queryBuilder.where).toHaveBeenCalledWith('path', 'LIKE', WRITING_PATH_LIKE_PATTERN)
     expect(queryBuilder.select).toHaveBeenCalledWith(...WRITING_LIST_QUERY_FIELDS)
+    expect(getValidatedQueryMock).toHaveBeenCalledWith(event, expect.any(Function))
 
-    expect(result).toHaveLength(2)
-    expect(result).toContainEqual({
-      path: '/writing/first-post',
-      title: 'First Post',
-      description: 'Direct description',
-      date: '2025-03-01',
-      tags: ['nuxt'],
-    })
-    expect(result).toContainEqual({
-      path: '/writing/second-post',
-      title: 'Second Post',
-      description: 'Meta description',
-      date: '2025-02-01',
-      tags: ['typescript'],
+    expect(result).toEqual({
+      items: [
+        {
+          path: '/writing/first-post',
+          title: 'First Post',
+          description: 'Direct description',
+          date: '2025-03-01',
+          tags: ['nuxt'],
+        },
+        {
+          path: '/writing/second-post',
+          title: 'Second Post',
+          description: 'Meta description',
+          date: '2025-02-01',
+          tags: ['typescript'],
+        },
+      ],
+      pagination: {
+        totalCount: 2,
+        totalPages: 1,
+        currentPage: WRITING_LIST_DEFAULT_PAGE,
+      },
     })
   })
 
-  it('sorts items by date descending and places missing dates last', async () => {
+  it('sorts items by date descending by default and places missing dates last', async () => {
     const event = {}
     const queryBuilder = createListQueryBuilder([
       {
@@ -130,39 +161,44 @@ describe('server/api/writing/list.get', () => {
     const handler = await listHandlerPromise
     const result = await handler(event)
 
-    expect(result.map((item) => item.path)).toEqual([
+    expect(result.items.map((item) => item.path)).toEqual([
       '/writing/newer',
       '/writing/older',
       '/writing/without-date',
     ])
+    expect(result.pagination.totalCount).toBe(3)
   })
 
-  it('filters by search query and tag query params', async () => {
+  it('filters by search/tag and supports sort/page/pageSize query params', async () => {
     const event = {
       query: {
         [WRITING_LIST_SEARCH_QUERY_PARAM]: 'meta',
         [WRITING_LIST_TAG_QUERY_PARAM]: 'typescript',
+        [WRITING_LIST_SORT_QUERY_PARAM]: WRITING_LIST_SORT_OLDEST,
+        [WRITING_LIST_PAGE_QUERY_PARAM]: '1',
+        [WRITING_LIST_PAGE_SIZE_QUERY_PARAM]: '1',
       },
     }
     const queryBuilder = createListQueryBuilder([
       {
         path: '/writing/first-post',
         title: 'First Post',
-        description: 'Direct description',
-        tags: ['nuxt'],
+        description: 'Meta description',
+        date: '2025-05-01',
+        tags: ['typescript'],
       },
       {
         path: '/writing/second-post',
         title: 'Second Post',
-        meta: {
-          description: 'Meta description',
-          tags: ['typescript'],
-        },
+        description: 'Meta description',
+        date: '2024-05-01',
+        tags: ['typescript'],
       },
       {
         path: '/writing/third-post',
         title: 'Third Post',
-        description: 'Meta description but wrong tag',
+        description: 'Meta description',
+        date: '2023-05-01',
         tags: ['javascript'],
       },
     ])
@@ -172,16 +208,52 @@ describe('server/api/writing/list.get', () => {
     const handler = await listHandlerPromise
     const result = await handler(event)
 
-    expect(getQueryMock).toHaveBeenCalledWith(event)
-    expect(result).toEqual([
+    expect(result).toEqual({
+      items: [
+        {
+          path: '/writing/second-post',
+          title: 'Second Post',
+          description: 'Meta description',
+          date: '2024-05-01',
+          tags: ['typescript'],
+        },
+      ],
+      pagination: {
+        totalCount: 2,
+        totalPages: 2,
+        currentPage: 1,
+      },
+    })
+  })
+
+  it('throws 404 when requested page is out of range', async () => {
+    const event = {
+      query: {
+        [WRITING_LIST_PAGE_QUERY_PARAM]: '5',
+        [WRITING_LIST_PAGE_SIZE_QUERY_PARAM]: '1',
+      },
+    }
+    const queryBuilder = createListQueryBuilder([
       {
-        path: '/writing/second-post',
-        title: 'Second Post',
-        description: 'Meta description',
-        date: '',
-        tags: ['typescript'],
+        path: '/writing/first-post',
+        title: 'First Post',
       },
     ])
+
+    queryCollectionMock.mockReturnValue(queryBuilder)
+
+    const handler = await listHandlerPromise
+
+    await expect(handler(event)).rejects.toMatchObject({
+      statusCode: WRITING_LIST_PAGE_OUT_OF_RANGE_STATUS_CODE,
+      statusMessage: WRITING_LIST_PAGE_OUT_OF_RANGE_MESSAGE,
+      data: {
+        totalCount: 1,
+        totalPages: 1,
+        currentPage: 5,
+      },
+    })
+    expect(createErrorMock).toHaveBeenCalled()
   })
 
   it('prerender smoke: writing payload does not contain NuxtError', () => {

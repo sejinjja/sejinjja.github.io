@@ -17,6 +17,9 @@ export const SEO_JSON_LD_TYPE_BLOG_POSTING = 'BlogPosting'
 export const SEO_JSON_LD_TYPE_PERSON = 'Person'
 
 export const SEO_KEYWORD_DELIMITER = ','
+export const SEO_ROBOTS_INDEX_FOLLOW = 'index,follow'
+export const SEO_ROBOTS_NOINDEX_FOLLOW = 'noindex,follow'
+export const DEFAULT_ROBOTS = SEO_ROBOTS_INDEX_FOLLOW
 
 export const SEO_TYPE_WEBSITE = 'website'
 export const SEO_TYPE_ARTICLE = 'article'

@@ -4,7 +4,10 @@ declare global {
   const abortNavigation: typeof import('../../node_modules/.pnpm/nuxt@4.3.1_@parcel+watcher@2.5.6_@types+node@25.2.2_@vue+compiler-sfc@3.5.28_better-sqlite3@1_z5dnk6vebqy37dmjbay4nes77m/node_modules/nuxt/dist/app/composables/router').abortNavigation
   const addRouteMiddleware: typeof import('../../node_modules/.pnpm/nuxt@4.3.1_@parcel+watcher@2.5.6_@types+node@25.2.2_@vue+compiler-sfc@3.5.28_better-sqlite3@1_z5dnk6vebqy37dmjbay4nes77m/node_modules/nuxt/dist/app/composables/router').addRouteMiddleware
   const buildSeoState: typeof import('../../utils/seoFormatter').buildSeoState
+  const buildWritingListApiResponse: typeof import('../../utils/writingList').buildWritingListApiResponse
+  const buildWritingListCanonicalQueryParams: typeof import('../../utils/writingList').buildWritingListCanonicalQueryParams
   const buildWritingListFilterOptionsFromQuery: typeof import('../../utils/writingList').buildWritingListFilterOptionsFromQuery
+  const buildWritingListQueryOptionsFromQuery: typeof import('../../utils/writingList').buildWritingListQueryOptionsFromQuery
   const buildWritingListQueryParams: typeof import('../../utils/writingList').buildWritingListQueryParams
   const callOnce: typeof import('../../node_modules/.pnpm/nuxt@4.3.1_@parcel+watcher@2.5.6_@types+node@25.2.2_@vue+compiler-sfc@3.5.28_better-sqlite3@1_z5dnk6vebqy37dmjbay4nes77m/node_modules/nuxt/dist/app/composables/once').callOnce
   const cancelIdleCallback: typeof import('../../node_modules/.pnpm/nuxt@4.3.1_@parcel+watcher@2.5.6_@types+node@25.2.2_@vue+compiler-sfc@3.5.28_better-sqlite3@1_z5dnk6vebqy37dmjbay4nes77m/node_modules/nuxt/dist/app/compat/idle-callback').cancelIdleCallback
@@ -46,6 +49,7 @@ declare global {
   const isShallow: typeof import('vue').isShallow
   const isVue2: typeof import('../../node_modules/.pnpm/nuxt@4.3.1_@parcel+watcher@2.5.6_@types+node@25.2.2_@vue+compiler-sfc@3.5.28_better-sqlite3@1_z5dnk6vebqy37dmjbay4nes77m/node_modules/nuxt/dist/app/compat/vue-demi').isVue2
   const isVue3: typeof import('../../node_modules/.pnpm/nuxt@4.3.1_@parcel+watcher@2.5.6_@types+node@25.2.2_@vue+compiler-sfc@3.5.28_better-sqlite3@1_z5dnk6vebqy37dmjbay4nes77m/node_modules/nuxt/dist/app/compat/vue-demi').isVue3
+  const isWritingListFacetedVariant: typeof import('../../utils/writingList').isWritingListFacetedVariant
   const loadPayload: typeof import('../../node_modules/.pnpm/nuxt@4.3.1_@parcel+watcher@2.5.6_@types+node@25.2.2_@vue+compiler-sfc@3.5.28_better-sqlite3@1_z5dnk6vebqy37dmjbay4nes77m/node_modules/nuxt/dist/app/composables/payload').loadPayload
   const markRaw: typeof import('vue').markRaw
   const mergeSeoState: typeof import('../../utils/seoFormatter').mergeSeoState
@@ -72,6 +76,7 @@ declare global {
   const onUnmounted: typeof import('vue').onUnmounted
   const onUpdated: typeof import('vue').onUpdated
   const onWatcherCleanup: typeof import('vue').onWatcherCleanup
+  const paginateWritingList: typeof import('../../utils/writingList').paginateWritingList
   const parseMarkdown: typeof import('../../node_modules/.pnpm/@nuxtjs+mdc@0.20.1_magicast@0.5.2/node_modules/@nuxtjs/mdc/dist/runtime/parser').parseMarkdown
   const prefetchComponents: typeof import('../../node_modules/.pnpm/nuxt@4.3.1_@parcel+watcher@2.5.6_@types+node@25.2.2_@vue+compiler-sfc@3.5.28_better-sqlite3@1_z5dnk6vebqy37dmjbay4nes77m/node_modules/nuxt/dist/app/composables/preload').prefetchComponents
   const preloadComponents: typeof import('../../node_modules/.pnpm/nuxt@4.3.1_@parcel+watcher@2.5.6_@types+node@25.2.2_@vue+compiler-sfc@3.5.28_better-sqlite3@1_z5dnk6vebqy37dmjbay4nes77m/node_modules/nuxt/dist/app/composables/preload').preloadComponents
@@ -100,6 +105,7 @@ declare global {
   const shallowReadonly: typeof import('vue').shallowReadonly
   const shallowRef: typeof import('vue').shallowRef
   const showError: typeof import('../../node_modules/.pnpm/nuxt@4.3.1_@parcel+watcher@2.5.6_@types+node@25.2.2_@vue+compiler-sfc@3.5.28_better-sqlite3@1_z5dnk6vebqy37dmjbay4nes77m/node_modules/nuxt/dist/app/composables/error').showError
+  const sortWritingList: typeof import('../../utils/writingList').sortWritingList
   const stringifyMarkdown: typeof import('../../node_modules/.pnpm/@nuxtjs+mdc@0.20.1_magicast@0.5.2/node_modules/@nuxtjs/mdc/dist/runtime/stringify').stringifyMarkdown
   const toRaw: typeof import('vue').toRaw
   const toRef: typeof import('vue').toRef
@@ -186,6 +192,7 @@ declare global {
   const useTemplateRef: typeof import('vue').useTemplateRef
   const useTheme: typeof import('../../composables/useTheme').useTheme
   const useTransitionState: typeof import('vue').useTransitionState
+  const useWritingListState: typeof import('../../composables/useWritingListState').useWritingListState
   const watch: typeof import('vue').watch
   const watchEffect: typeof import('vue').watchEffect
   const watchPostEffect: typeof import('vue').watchPostEffect
@@ -203,10 +210,13 @@ declare global {
   export type { Component, ComponentPublicInstance, ComputedRef, DirectiveBinding, ExtractDefaultPropTypes, ExtractPropTypes, ExtractPublicPropTypes, InjectionKey, PropType, Ref, MaybeRef, MaybeRefOrGetter, VNode, WritableComputedRef } from 'vue'
   import('vue')
   // @ts-ignore
+  export type { WritingListPageLink } from '../../composables/useWritingListState'
+  import('../../composables/useWritingListState')
+  // @ts-ignore
   export type { SeoState, SeoStateInput } from '../../utils/seoFormatter'
   import('../../utils/seoFormatter')
   // @ts-ignore
-  export type { WritingListSourceItem, WritingListResponseItem, WritingListFilterOptions } from '../../utils/writingList'
+  export type { WritingListSourceItem, WritingListResponseItem, WritingListFilterOptions, WritingListSort, WritingListQueryOptions, WritingListPaginationMeta, WritingListApiResponse, ProcessedWritingListResult } from '../../utils/writingList'
   import('../../utils/writingList')
 }
 // for vue template auto import
@@ -216,7 +226,10 @@ declare module 'vue' {
     readonly abortNavigation: UnwrapRef<typeof import('../../node_modules/.pnpm/nuxt@4.3.1_@parcel+watcher@2.5.6_@types+node@25.2.2_@vue+compiler-sfc@3.5.28_better-sqlite3@1_z5dnk6vebqy37dmjbay4nes77m/node_modules/nuxt/dist/app/composables/router')['abortNavigation']>
     readonly addRouteMiddleware: UnwrapRef<typeof import('../../node_modules/.pnpm/nuxt@4.3.1_@parcel+watcher@2.5.6_@types+node@25.2.2_@vue+compiler-sfc@3.5.28_better-sqlite3@1_z5dnk6vebqy37dmjbay4nes77m/node_modules/nuxt/dist/app/composables/router')['addRouteMiddleware']>
     readonly buildSeoState: UnwrapRef<typeof import('../../utils/seoFormatter')['buildSeoState']>
+    readonly buildWritingListApiResponse: UnwrapRef<typeof import('../../utils/writingList')['buildWritingListApiResponse']>
+    readonly buildWritingListCanonicalQueryParams: UnwrapRef<typeof import('../../utils/writingList')['buildWritingListCanonicalQueryParams']>
     readonly buildWritingListFilterOptionsFromQuery: UnwrapRef<typeof import('../../utils/writingList')['buildWritingListFilterOptionsFromQuery']>
+    readonly buildWritingListQueryOptionsFromQuery: UnwrapRef<typeof import('../../utils/writingList')['buildWritingListQueryOptionsFromQuery']>
     readonly buildWritingListQueryParams: UnwrapRef<typeof import('../../utils/writingList')['buildWritingListQueryParams']>
     readonly callOnce: UnwrapRef<typeof import('../../node_modules/.pnpm/nuxt@4.3.1_@parcel+watcher@2.5.6_@types+node@25.2.2_@vue+compiler-sfc@3.5.28_better-sqlite3@1_z5dnk6vebqy37dmjbay4nes77m/node_modules/nuxt/dist/app/composables/once')['callOnce']>
     readonly cancelIdleCallback: UnwrapRef<typeof import('../../node_modules/.pnpm/nuxt@4.3.1_@parcel+watcher@2.5.6_@types+node@25.2.2_@vue+compiler-sfc@3.5.28_better-sqlite3@1_z5dnk6vebqy37dmjbay4nes77m/node_modules/nuxt/dist/app/compat/idle-callback')['cancelIdleCallback']>
@@ -258,6 +271,7 @@ declare module 'vue' {
     readonly isShallow: UnwrapRef<typeof import('vue')['isShallow']>
     readonly isVue2: UnwrapRef<typeof import('../../node_modules/.pnpm/nuxt@4.3.1_@parcel+watcher@2.5.6_@types+node@25.2.2_@vue+compiler-sfc@3.5.28_better-sqlite3@1_z5dnk6vebqy37dmjbay4nes77m/node_modules/nuxt/dist/app/compat/vue-demi')['isVue2']>
     readonly isVue3: UnwrapRef<typeof import('../../node_modules/.pnpm/nuxt@4.3.1_@parcel+watcher@2.5.6_@types+node@25.2.2_@vue+compiler-sfc@3.5.28_better-sqlite3@1_z5dnk6vebqy37dmjbay4nes77m/node_modules/nuxt/dist/app/compat/vue-demi')['isVue3']>
+    readonly isWritingListFacetedVariant: UnwrapRef<typeof import('../../utils/writingList')['isWritingListFacetedVariant']>
     readonly loadPayload: UnwrapRef<typeof import('../../node_modules/.pnpm/nuxt@4.3.1_@parcel+watcher@2.5.6_@types+node@25.2.2_@vue+compiler-sfc@3.5.28_better-sqlite3@1_z5dnk6vebqy37dmjbay4nes77m/node_modules/nuxt/dist/app/composables/payload')['loadPayload']>
     readonly markRaw: UnwrapRef<typeof import('vue')['markRaw']>
     readonly mergeSeoState: UnwrapRef<typeof import('../../utils/seoFormatter')['mergeSeoState']>
@@ -284,6 +298,7 @@ declare module 'vue' {
     readonly onUnmounted: UnwrapRef<typeof import('vue')['onUnmounted']>
     readonly onUpdated: UnwrapRef<typeof import('vue')['onUpdated']>
     readonly onWatcherCleanup: UnwrapRef<typeof import('vue')['onWatcherCleanup']>
+    readonly paginateWritingList: UnwrapRef<typeof import('../../utils/writingList')['paginateWritingList']>
     readonly parseMarkdown: UnwrapRef<typeof import('../../node_modules/.pnpm/@nuxtjs+mdc@0.20.1_magicast@0.5.2/node_modules/@nuxtjs/mdc/dist/runtime/parser')['parseMarkdown']>
     readonly prefetchComponents: UnwrapRef<typeof import('../../node_modules/.pnpm/nuxt@4.3.1_@parcel+watcher@2.5.6_@types+node@25.2.2_@vue+compiler-sfc@3.5.28_better-sqlite3@1_z5dnk6vebqy37dmjbay4nes77m/node_modules/nuxt/dist/app/composables/preload')['prefetchComponents']>
     readonly preloadComponents: UnwrapRef<typeof import('../../node_modules/.pnpm/nuxt@4.3.1_@parcel+watcher@2.5.6_@types+node@25.2.2_@vue+compiler-sfc@3.5.28_better-sqlite3@1_z5dnk6vebqy37dmjbay4nes77m/node_modules/nuxt/dist/app/composables/preload')['preloadComponents']>
@@ -312,6 +327,7 @@ declare module 'vue' {
     readonly shallowReadonly: UnwrapRef<typeof import('vue')['shallowReadonly']>
     readonly shallowRef: UnwrapRef<typeof import('vue')['shallowRef']>
     readonly showError: UnwrapRef<typeof import('../../node_modules/.pnpm/nuxt@4.3.1_@parcel+watcher@2.5.6_@types+node@25.2.2_@vue+compiler-sfc@3.5.28_better-sqlite3@1_z5dnk6vebqy37dmjbay4nes77m/node_modules/nuxt/dist/app/composables/error')['showError']>
+    readonly sortWritingList: UnwrapRef<typeof import('../../utils/writingList')['sortWritingList']>
     readonly stringifyMarkdown: UnwrapRef<typeof import('../../node_modules/.pnpm/@nuxtjs+mdc@0.20.1_magicast@0.5.2/node_modules/@nuxtjs/mdc/dist/runtime/stringify')['stringifyMarkdown']>
     readonly toRaw: UnwrapRef<typeof import('vue')['toRaw']>
     readonly toRef: UnwrapRef<typeof import('vue')['toRef']>
@@ -398,6 +414,7 @@ declare module 'vue' {
     readonly useTemplateRef: UnwrapRef<typeof import('vue')['useTemplateRef']>
     readonly useTheme: UnwrapRef<typeof import('../../composables/useTheme')['useTheme']>
     readonly useTransitionState: UnwrapRef<typeof import('vue')['useTransitionState']>
+    readonly useWritingListState: UnwrapRef<typeof import('../../composables/useWritingListState')['useWritingListState']>
     readonly watch: UnwrapRef<typeof import('vue')['watch']>
     readonly watchEffect: UnwrapRef<typeof import('vue')['watchEffect']>
     readonly watchPostEffect: UnwrapRef<typeof import('vue')['watchPostEffect']>

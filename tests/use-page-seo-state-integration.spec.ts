@@ -14,6 +14,7 @@ describe('usePageSeo and useSeoState integration', () => {
     expect(USE_PAGE_SEO_SOURCE).toContain('const { setSeo } = useSeoState()')
     expect(USE_PAGE_SEO_SOURCE).toContain('watchEffect(() => {')
     expect(USE_PAGE_SEO_SOURCE).toContain('setSeo({')
-    expect(USE_PAGE_SEO_SOURCE).toContain('canonicalPath: route.path')
+    expect(USE_PAGE_SEO_SOURCE).toContain('resolvedCanonicalPath')
+    expect(USE_PAGE_SEO_SOURCE).toContain('canonicalPath: resolvedCanonicalPath.value')
   })
 })

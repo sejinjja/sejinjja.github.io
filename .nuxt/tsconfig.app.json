@@ -13,6 +13,12 @@
       "@vue/compiler-sfc": [
         "../node_modules/.pnpm/@vue+compiler-sfc@3.5.28/node_modules/@vue/compiler-sfc"
       ],
+      "vue-router": [
+        "../node_modules/.pnpm/vue-router@4.6.4_vue@3.5.28_typescript@5.9.3_/node_modules/vue-router"
+      ],
+      "vue-router/auto-routes": [
+        "../node_modules/.pnpm/vue-router@4.6.4_vue@3.5.28_typescript@5.9.3_/node_modules/vue-router/vue-router-auto-routes"
+      ],
       "unplugin-vue-router/client": [
         "../node_modules/.pnpm/unplugin-vue-router@0.19.2_@vue+compiler-sfc@3.5.28_vue-router@4.6.4_vue@3.5.28_typescript@5._ochjw5bsbfvx7jt6aapuwgu6w4/node_modules/unplugin-vue-router/client"
       ],
@@ -104,7 +110,7 @@
         "../node_modules/.pnpm/nuxt@4.3.1_@parcel+watcher@2.5.6_@types+node@25.2.2_@vue+compiler-sfc@3.5.28_better-sqlite3@1_z5dnk6vebqy37dmjbay4nes77m/node_modules/nuxt/dist/app/compat/vue-demi"
       ],
       "#vue-router": [
-        "../node_modules/.pnpm/vue-router@5.0.2_@vue+compiler-sfc@3.5.28_vue@3.5.28_typescript@5.9.3_/node_modules/vue-router"
+        "../node_modules/.pnpm/vue-router@4.6.4_vue@3.5.28_typescript@5.9.3_/node_modules/vue-router"
       ],
       "#unhead/composables": [
         "../node_modules/.pnpm/nuxt@4.3.1_@parcel+watcher@2.5.6_@types+node@25.2.2_@vue+compiler-sfc@3.5.28_better-sqlite3@1_z5dnk6vebqy37dmjbay4nes77m/node_modules/nuxt/dist/head/runtime/composables"
@@ -122,7 +128,7 @@
         "./mdc-imports"
       ],
       "#app-manifest": [
-        "./manifest/meta/c9bf8f3a-0bfa-4a1e-8c99-9e985a82b988.json"
+        "./manifest/meta/82bd3eec-dcf2-4815-b44b-ba92301e9125.json"
       ],
       "#components": [
         "./components"

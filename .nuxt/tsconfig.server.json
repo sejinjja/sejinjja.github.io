@@ -41,6 +41,12 @@
       "@vue/compiler-sfc": [
         "../node_modules/.pnpm/@vue+compiler-sfc@3.5.28/node_modules/@vue/compiler-sfc"
       ],
+      "vue-router": [
+        "../node_modules/.pnpm/vue-router@4.6.4_vue@3.5.28_typescript@5.9.3_/node_modules/vue-router"
+      ],
+      "vue-router/auto-routes": [
+        "../node_modules/.pnpm/vue-router@4.6.4_vue@3.5.28_typescript@5.9.3_/node_modules/vue-router/vue-router-auto-routes"
+      ],
       "unplugin-vue-router/client": [
         "../node_modules/.pnpm/unplugin-vue-router@0.19.2_@vue+compiler-sfc@3.5.28_vue-router@4.6.4_vue@3.5.28_typescript@5._ochjw5bsbfvx7jt6aapuwgu6w4/node_modules/unplugin-vue-router/client"
       ],

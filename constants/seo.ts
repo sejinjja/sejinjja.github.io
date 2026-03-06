@@ -2,6 +2,7 @@ export const SEO_STATE_KEY = 'seo:state'
 
 export const SITE_OWNER_NAME = '조세진'
 export const SITE_URL = 'https://sejinjja.github.io'
+export const SITE_GITHUB_URL = 'https://github.com/sejinjja'
 
 export const DEFAULT_SEO_TITLE = `${SITE_OWNER_NAME} | 프런트엔드/웹 개발자`
 export const DEFAULT_META_TITLE = DEFAULT_SEO_TITLE

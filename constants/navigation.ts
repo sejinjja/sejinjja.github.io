@@ -2,12 +2,15 @@ import {
   ABOUT_ROUTE_PATH,
   HOME_ROUTE_PATH,
   PROJECTS_ROUTE_PATH,
+  FEED_ROUTE_PATH,
+  SITEMAP_ROUTE_PATH,
 } from '~/constants/routes'
 import { WRITING_BASE_PATH } from '~/constants/writing'
 import {
   WORK_SCHEDULE_MANAGER_NAV_LABEL,
   WORK_SCHEDULE_MANAGER_ROUTE_PATH,
 } from '~/constants/workScheduleManager'
+import { SITE_GITHUB_URL, SITE_OWNER_NAME } from '~/constants/seo'
 
 export interface HeaderNavigationItem {
   to: string
@@ -28,3 +31,11 @@ export const HEADER_NAV_ITEMS: HeaderNavigationItem[] = [
   { to: WRITING_BASE_PATH, label: '글' },
   { to: WORK_SCHEDULE_MANAGER_ROUTE_PATH, label: WORK_SCHEDULE_MANAGER_NAV_LABEL },
 ]
+
+export const FOOTER_GITHUB_URL = SITE_GITHUB_URL
+export const FOOTER_GITHUB_ARIA_LABEL = 'GitHub (새 탭에서 열림)'
+export const FOOTER_FEED_TO = FEED_ROUTE_PATH
+export const FOOTER_FEED_LABEL = 'RSS 피드'
+export const FOOTER_SITEMAP_TO = SITEMAP_ROUTE_PATH
+export const FOOTER_SITEMAP_LABEL = '사이트맵'
+export const FOOTER_COPYRIGHT_NAME = SITE_OWNER_NAME

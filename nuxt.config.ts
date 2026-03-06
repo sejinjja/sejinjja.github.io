@@ -1,5 +1,5 @@
 import { readdirSync } from 'node:fs'
-import { resolve } from 'node:path'
+import { relative, resolve } from 'node:path'
 import {
   DEFAULT_META_DESCRIPTION,
   DEFAULT_SEO_TITLE,
@@ -11,16 +11,35 @@ import {
 } from './constants/seo'
 import { PRERENDER_STATIC_ROUTES } from './constants/routes'
 
-const writingContentDir = resolve(process.cwd(), 'content', 'writing')
-const writingRoutes = (() => {
+function collectWritingRoutes(dir: string, root: string): string[] {
   try {
-    return readdirSync(writingContentDir, { withFileTypes: true })
-      .filter((entry) => entry.isFile() && entry.name.endsWith('.md'))
-      .map((entry) => `/writing/${entry.name.slice(0, -3)}`)
+    return readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
+      const fullPath = resolve(dir, entry.name)
+      if (entry.isDirectory()) {
+        return collectWritingRoutes(fullPath, root)
+      }
+      if (!entry.isFile() || !entry.name.endsWith('.md')) {
+        return []
+      }
+      const segments = relative(root, fullPath)
+        .replaceAll('\\', '/')
+        .replace(/\.md$/, '')
+        .split('/')
+        .map((s) => s.replace(/^\d+\./, ''))
+        .filter(Boolean)
+      if (segments.some((s) => s.startsWith('_'))) {
+        return []
+      }
+      const slug = segments.join('/').replace(/\/index$/, '')
+      return slug ? [`/writing/${slug}`] : []
+    })
   } catch {
     return []
   }
-})()
+}
+
+const writingContentDir = resolve(process.cwd(), 'content', 'writing')
+const writingRoutes = collectWritingRoutes(writingContentDir, writingContentDir)
 
 export default defineNuxtConfig({
   devtools: { enabled: true },

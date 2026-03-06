@@ -36,6 +36,7 @@ jobs:
         run: pnpm typecheck
 
       - name: Sync Notion posts
+        id: notion-sync
         run: pnpm notion:sync
         continue-on-error: true
         env:
@@ -49,6 +50,10 @@ jobs:
           NOTION_DATE_PROPERTY: ${{ vars.NOTION_DATE_PROPERTY }}
           NOTION_TAGS_PROPERTY: ${{ vars.NOTION_TAGS_PROPERTY }}
           NOTION_PUBLISHED_PROPERTY: ${{ vars.NOTION_PUBLISHED_PROPERTY }}
+
+      - name: Warn on Notion sync failure
+        if: steps.notion-sync.outcome == 'failure'
+        run: echo "::warning::Notion sync failed. Build continues with existing cached content. Check NOTION_TOKEN and NOTION_DATA_SOURCE_ID secrets."
 
       - name: Generate static site
         run: pnpm generate

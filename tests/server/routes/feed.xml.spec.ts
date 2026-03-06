@@ -40,7 +40,22 @@ describe('server/routes/feed.xml', () => {
     rmSync(tempDir, { recursive: true, force: true })
   })
 
-  it('builds RSS items from markdown frontmatter regardless of line endings and includes categories', async () => {
+  it('builds RSS items with shared route-normalization rules and deterministic collision handling', async () => {
+    writeFileSync(
+      resolve(tempDir, 'content/writing/01.first-post.md'),
+      [
+        '---',
+        'title: "First Post (Preferred)"',
+        'description: "충돌 시 우선 선택되는 글"',
+        'date: "2026-03-06"',
+        'tags: ["preferred"]',
+        '---',
+        '',
+        '# First Preferred',
+      ].join('\n'),
+      'utf-8',
+    )
+
     writeFileSync(
       resolve(tempDir, 'content/writing/first-post.md'),
       [
@@ -71,21 +86,51 @@ describe('server/routes/feed.xml', () => {
       'utf-8',
     )
 
+    mkdirSync(resolve(tempDir, 'content/writing/guides'), { recursive: true })
+    writeFileSync(
+      resolve(tempDir, 'content/writing/guides/index.md'),
+      [
+        '---',
+        'title: "Guides Index"',
+        'description: "index 정규화 테스트"',
+        'date: "2026-03-03"',
+        'tags: ["index"]',
+        '---',
+        '',
+        '# Guides',
+      ].join('\n'),
+      'utf-8',
+    )
+
+    writeFileSync(
+      resolve(tempDir, 'content/writing/_hidden.md'),
+      [
+        '---',
+        'title: "Hidden"',
+        'description: "노출되면 안됨"',
+        'date: "2026-03-02"',
+        '---',
+      ].join('\n'),
+      'utf-8',
+    )
+
     const event = {}
     const handler = await handlerPromise
     const xml = await handler(event)
 
-    expect((xml.match(/<item>/g) ?? []).length).toBe(2)
+    expect((xml.match(/<item>/g) ?? []).length).toBe(3)
     expect(xml).toContain(`<title>${WRITING_FEED_CHANNEL_TITLE}</title>`)
     expect(xml).toContain(`<description>${WRITING_FEED_CHANNEL_DESCRIPTION}</description>`)
     expect(xml).toContain(`<atom:link href="${SITE_URL}${FEED_ROUTE_PATH}" rel="self" type="application/rss+xml"/>`)
-    expect(xml).toContain('<title>First Post</title>')
+    expect(xml).toContain('<title>First Post (Preferred)</title>')
     expect(xml).toContain(`<link>${SITE_URL}/writing/first-post</link>`)
     expect(xml).toContain(`<guid isPermaLink="true">${SITE_URL}/writing/first-post</guid>`)
+    expect((xml.match(new RegExp(`<link>${SITE_URL}/writing/first-post</link>`, 'g')) ?? []).length).toBe(1)
     expect(xml).toMatch(/<pubDate>.+<\/pubDate>/)
-    expect(xml).toContain('<category>nuxt</category>')
-    expect(xml).toContain('<category>rss</category>')
+    expect(xml).toContain('<category>preferred</category>')
     expect(xml).toContain('<category>testing</category>')
+    expect(xml).toContain(`<link>${SITE_URL}/writing/guides</link>`)
+    expect(xml).not.toContain('/writing/_hidden')
     expect(setHeaderMock).toHaveBeenCalledWith(event, 'content-type', 'application/rss+xml; charset=UTF-8')
   })
 })

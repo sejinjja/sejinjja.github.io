@@ -31,6 +31,8 @@ declare global {
   const definePayloadReviver: typeof import('../../node_modules/.pnpm/nuxt@4.3.1_@parcel+watcher@2.5.6_@types+node@25.2.2_@vue+compiler-sfc@3.5.28_better-sqlite3@1_z5dnk6vebqy37dmjbay4nes77m/node_modules/nuxt/dist/app/composables/payload').definePayloadReviver
   const effect: typeof import('vue').effect
   const effectScope: typeof import('vue').effectScope
+  const fileRelativePathToWritingRoute: typeof import('../../utils/writingRoute').fileRelativePathToWritingRoute
+  const fileRelativePathToWritingSlug: typeof import('../../utils/writingRoute').fileRelativePathToWritingSlug
   const filterWritingList: typeof import('../../utils/writingList').filterWritingList
   const getAppManifest: typeof import('../../node_modules/.pnpm/nuxt@4.3.1_@parcel+watcher@2.5.6_@types+node@25.2.2_@vue+compiler-sfc@3.5.28_better-sqlite3@1_z5dnk6vebqy37dmjbay4nes77m/node_modules/nuxt/dist/app/composables/manifest').getAppManifest
   const getCurrentInstance: typeof import('vue').getCurrentInstance
@@ -98,6 +100,7 @@ declare global {
   const reloadNuxtApp: typeof import('../../node_modules/.pnpm/nuxt@4.3.1_@parcel+watcher@2.5.6_@types+node@25.2.2_@vue+compiler-sfc@3.5.28_better-sqlite3@1_z5dnk6vebqy37dmjbay4nes77m/node_modules/nuxt/dist/app/composables/chunk').reloadNuxtApp
   const requestIdleCallback: typeof import('../../node_modules/.pnpm/nuxt@4.3.1_@parcel+watcher@2.5.6_@types+node@25.2.2_@vue+compiler-sfc@3.5.28_better-sqlite3@1_z5dnk6vebqy37dmjbay4nes77m/node_modules/nuxt/dist/app/compat/idle-callback').requestIdleCallback
   const resolveComponent: typeof import('vue').resolveComponent
+  const resolveWritingRouteCandidates: typeof import('../../utils/writingRoute').resolveWritingRouteCandidates
   const setInterval: typeof import('../../node_modules/.pnpm/nuxt@4.3.1_@parcel+watcher@2.5.6_@types+node@25.2.2_@vue+compiler-sfc@3.5.28_better-sqlite3@1_z5dnk6vebqy37dmjbay4nes77m/node_modules/nuxt/dist/app/compat/interval').setInterval
   const setPageLayout: typeof import('../../node_modules/.pnpm/nuxt@4.3.1_@parcel+watcher@2.5.6_@types+node@25.2.2_@vue+compiler-sfc@3.5.28_better-sqlite3@1_z5dnk6vebqy37dmjbay4nes77m/node_modules/nuxt/dist/app/composables/router').setPageLayout
   const setResponseStatus: typeof import('../../node_modules/.pnpm/nuxt@4.3.1_@parcel+watcher@2.5.6_@types+node@25.2.2_@vue+compiler-sfc@3.5.28_better-sqlite3@1_z5dnk6vebqy37dmjbay4nes77m/node_modules/nuxt/dist/app/composables/ssr').setResponseStatus
@@ -218,6 +221,9 @@ declare global {
   // @ts-ignore
   export type { WritingListSourceItem, WritingListResponseItem, WritingListFilterOptions, WritingListSort, WritingListQueryOptions, WritingListPaginationMeta, WritingListApiResponse, ProcessedWritingListResult } from '../../utils/writingList'
   import('../../utils/writingList')
+  // @ts-ignore
+  export type { WritingRouteCandidate, ResolvedWritingRoute, WritingRouteCollision, ResolveWritingRouteCandidatesResult } from '../../utils/writingRoute'
+  import('../../utils/writingRoute')
 }
 // for vue template auto import
 import { UnwrapRef } from 'vue'
@@ -253,6 +259,8 @@ declare module 'vue' {
     readonly definePayloadReviver: UnwrapRef<typeof import('../../node_modules/.pnpm/nuxt@4.3.1_@parcel+watcher@2.5.6_@types+node@25.2.2_@vue+compiler-sfc@3.5.28_better-sqlite3@1_z5dnk6vebqy37dmjbay4nes77m/node_modules/nuxt/dist/app/composables/payload')['definePayloadReviver']>
     readonly effect: UnwrapRef<typeof import('vue')['effect']>
     readonly effectScope: UnwrapRef<typeof import('vue')['effectScope']>
+    readonly fileRelativePathToWritingRoute: UnwrapRef<typeof import('../../utils/writingRoute')['fileRelativePathToWritingRoute']>
+    readonly fileRelativePathToWritingSlug: UnwrapRef<typeof import('../../utils/writingRoute')['fileRelativePathToWritingSlug']>
     readonly filterWritingList: UnwrapRef<typeof import('../../utils/writingList')['filterWritingList']>
     readonly getAppManifest: UnwrapRef<typeof import('../../node_modules/.pnpm/nuxt@4.3.1_@parcel+watcher@2.5.6_@types+node@25.2.2_@vue+compiler-sfc@3.5.28_better-sqlite3@1_z5dnk6vebqy37dmjbay4nes77m/node_modules/nuxt/dist/app/composables/manifest')['getAppManifest']>
     readonly getCurrentInstance: UnwrapRef<typeof import('vue')['getCurrentInstance']>
@@ -320,6 +328,7 @@ declare module 'vue' {
     readonly reloadNuxtApp: UnwrapRef<typeof import('../../node_modules/.pnpm/nuxt@4.3.1_@parcel+watcher@2.5.6_@types+node@25.2.2_@vue+compiler-sfc@3.5.28_better-sqlite3@1_z5dnk6vebqy37dmjbay4nes77m/node_modules/nuxt/dist/app/composables/chunk')['reloadNuxtApp']>
     readonly requestIdleCallback: UnwrapRef<typeof import('../../node_modules/.pnpm/nuxt@4.3.1_@parcel+watcher@2.5.6_@types+node@25.2.2_@vue+compiler-sfc@3.5.28_better-sqlite3@1_z5dnk6vebqy37dmjbay4nes77m/node_modules/nuxt/dist/app/compat/idle-callback')['requestIdleCallback']>
     readonly resolveComponent: UnwrapRef<typeof import('vue')['resolveComponent']>
+    readonly resolveWritingRouteCandidates: UnwrapRef<typeof import('../../utils/writingRoute')['resolveWritingRouteCandidates']>
     readonly setInterval: UnwrapRef<typeof import('../../node_modules/.pnpm/nuxt@4.3.1_@parcel+watcher@2.5.6_@types+node@25.2.2_@vue+compiler-sfc@3.5.28_better-sqlite3@1_z5dnk6vebqy37dmjbay4nes77m/node_modules/nuxt/dist/app/compat/interval')['setInterval']>
     readonly setPageLayout: UnwrapRef<typeof import('../../node_modules/.pnpm/nuxt@4.3.1_@parcel+watcher@2.5.6_@types+node@25.2.2_@vue+compiler-sfc@3.5.28_better-sqlite3@1_z5dnk6vebqy37dmjbay4nes77m/node_modules/nuxt/dist/app/composables/router')['setPageLayout']>
     readonly setResponseStatus: UnwrapRef<typeof import('../../node_modules/.pnpm/nuxt@4.3.1_@parcel+watcher@2.5.6_@types+node@25.2.2_@vue+compiler-sfc@3.5.28_better-sqlite3@1_z5dnk6vebqy37dmjbay4nes77m/node_modules/nuxt/dist/app/composables/ssr')['setResponseStatus']>

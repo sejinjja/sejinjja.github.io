@@ -37,7 +37,29 @@ describe('server/routes/sitemap.xml', () => {
     rmSync(tempDir, { recursive: true, force: true })
   })
 
-  it('includes static routes and writing entries with lastmod values', async () => {
+  it('includes static routes and deduplicated writing entries with normalized paths', async () => {
+    writeFileSync(
+      resolve(tempDir, 'content/writing/01.guide.md'),
+      [
+        '---',
+        'title: "Guide Preferred"',
+        'date: "2026-03-01"',
+        '---',
+      ].join('\n'),
+      'utf-8',
+    )
+
+    writeFileSync(
+      resolve(tempDir, 'content/writing/guide.md'),
+      [
+        '---',
+        'title: "Guide Duplicate"',
+        'date: "2026-03-02"',
+        '---',
+      ].join('\n'),
+      'utf-8',
+    )
+
     writeFileSync(
       resolve(tempDir, 'content/writing/nested/post.md'),
       [
@@ -52,6 +74,20 @@ describe('server/routes/sitemap.xml', () => {
       'utf-8',
     )
 
+    writeFileSync(
+      resolve(tempDir, 'content/writing/nested/index.md'),
+      [
+        '---',
+        'title: "Nested Index"',
+        'description: "index 정규화"',
+        'date: "2026-03-03"',
+        '---',
+      ].join('\n'),
+      'utf-8',
+    )
+
+    writeFileSync(resolve(tempDir, 'content/writing/nested/_private.md'), '# private', 'utf-8')
+
     const event = {}
     const handler = await handlerPromise
     const xml = await handler(event)
@@ -61,8 +97,13 @@ describe('server/routes/sitemap.xml', () => {
     }
 
     expect(xml).toContain(`<loc>${SITE_URL}${WORK_SCHEDULE_MANAGER_ROUTE_PATH}</loc>`)
+    expect(xml).toContain(`<loc>${SITE_URL}/writing/guide</loc>`)
+    expect((xml.match(new RegExp(`<loc>${SITE_URL}/writing/guide</loc>`, 'g')) ?? []).length).toBe(1)
     expect(xml).toContain(`<loc>${SITE_URL}/writing/nested/post</loc>`)
+    expect(xml).toContain(`<loc>${SITE_URL}/writing/nested</loc>`)
+    expect(xml).not.toContain('/writing/nested/_private')
     expect(xml).toContain('<lastmod>2026-03-01T00:00:00.000Z</lastmod>')
+    expect(xml).toContain('<lastmod>2026-03-03T00:00:00.000Z</lastmod>')
     expect(setHeaderMock).toHaveBeenCalledWith(event, 'content-type', 'application/xml; charset=UTF-8')
   })
 })

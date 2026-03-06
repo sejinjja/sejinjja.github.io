@@ -1,13 +1,13 @@
 <template>
   <section>
     <CommonSectionTitle>
-      함께 일할 때 잘 맞는 방식
+      {{ ABOUT_COLLABORATION_GUIDE_TITLE }}
     </CommonSectionTitle>
 
     <div class="p-6 rounded-xl bg-primary-50 dark:bg-primary-900/20 border border-primary-100 dark:border-primary-800">
       <ul class="space-y-4">
         <li
-          v-for="(guide, idx) in guides"
+          v-for="(guide, idx) in ABOUT_COLLABORATION_GUIDE_ITEMS"
           :key="idx"
           class="flex items-start gap-3"
         >
@@ -22,9 +22,8 @@
 </template>
 
 <script setup lang="ts">
-const guides = [
-  '"지금 무엇이 확정이고, 무엇이 미정인지"를 명시해주면 최고의 퍼포먼스를 냅니다.',
-  '요구사항에 입력 계약 / 실패 조건 / 검증 기준을 같이 주면 구현 품질이 급상승합니다.',
-  '변경 요청은 "왜 바뀌는지"와 "어디까지 보장해야 하는지(테스트 범위)"가 포함되면 가장 좋습니다.',
-]
+import {
+  ABOUT_COLLABORATION_GUIDE_ITEMS,
+  ABOUT_COLLABORATION_GUIDE_TITLE,
+} from '~/constants/about'
 </script>

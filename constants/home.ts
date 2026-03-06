@@ -10,6 +10,49 @@ export const HOME_PAGE_TITLE = '홈'
 export const HOME_PAGE_META_DESCRIPTION = DEFAULT_META_DESCRIPTION
 export const HOME_PAGE_OG_TITLE = DEFAULT_SEO_TITLE
 
+export const HOME_HERO_ROLE_LABEL = 'Frontend / Web Developer'
+export const HOME_HERO_TITLE = '조세진'
+export const HOME_HERO_DESCRIPTION_LINES = [
+  '실무에서 통하는 정확함과 구조화된 사고로',
+  '문제를 끝까지 해결하는 프런트엔드/웹 개발자.',
+] as const
+export const HOME_HERO_PRIMARY_CTA_TO = ABOUT_ROUTE_PATH
+export const HOME_HERO_PRIMARY_CTA_LABEL = '더 알아보기'
+export const HOME_HERO_SECONDARY_CTA_TO = PROJECTS_ROUTE_PATH
+export const HOME_HERO_SECONDARY_CTA_LABEL = '프로젝트 보기'
+
+export const HOME_KEYWORDS_SECTION_TITLE = '핵심 키워드'
+export const HOME_KEYWORDS_SECTION_SUBTITLE = '제가 일하는 방식을 정의하는 네 가지 가치입니다.'
+
+export interface HomeKeywordItem {
+  title: string
+  icon: string
+  description: string
+}
+
+export const HOME_KEYWORD_ITEMS: HomeKeywordItem[] = [
+  {
+    title: '정확성 / 일관성',
+    icon: 'heroicons:check-badge',
+    description: '경계 조건, 실패 조건, 검증 기준이 흐려지는 것을 싫어하고 "정의 → 구현 → 검증"의 정합성을 중요하게 봅니다.',
+  },
+  {
+    title: '구조화 / 재사용',
+    icon: 'heroicons:cube-transparent',
+    description: '문제를 분해하고 재사용 가능한 형태로 정리하는 성향이 강합니다. 요구사항 이해 → 해결 전략 → 구현.',
+  },
+  {
+    title: '실전 지향',
+    icon: 'heroicons:rocket-launch',
+    description: '"되긴 하는 코드"보다 프로덕션에서 안전하게 굴러가는 구조를 선호합니다.',
+  },
+  {
+    title: '학습의 목적성',
+    icon: 'heroicons:light-bulb',
+    description: '단순 지식 축적보다, 당장 쓰일 수 있는 형태(문서/가이드/CLI/템플릿)로 남기려 합니다.',
+  },
+]
+
 export const QUICK_NAV_ABOUT_ICON = 'heroicons:user'
 export const QUICK_NAV_ABOUT_LABEL = '소개'
 export const QUICK_NAV_ABOUT_DESCRIPTION = '일하는 방식, 기술 성향, 함께 일할 때 잘 맞는 방식을 소개합니다.'

@@ -3,7 +3,10 @@ import { existsSync } from 'node:fs'
 import { readFile, readdir } from 'node:fs/promises'
 import { relative, resolve } from 'node:path'
 import type { Dirent } from 'node:fs'
-import { WRITING_BASE_PATH } from '~/constants/writing'
+import {
+  fileRelativePathToWritingRoute,
+  resolveWritingRouteCandidates,
+} from '~/utils/writingRoute'
 
 const FRONTMATTER_BLOCK_PATTERN = /^---\r?\n([\s\S]*?)\r?\n---/
 
@@ -107,7 +110,8 @@ export async function extractWritingMeta(filePath: string): Promise<WritingMeta>
 }
 
 export async function collectMarkdownFiles(dir: string): Promise<string[]> {
-  const entries = await readdir(dir, { withFileTypes: true })
+  const entries = (await readdir(dir, { withFileTypes: true }))
+    .sort((a, b) => a.name.localeCompare(b.name))
   const nested = await Promise.all(
     entries.map(async (entry: Dirent) => {
       const fullPath = resolve(dir, entry.name)
@@ -126,23 +130,7 @@ export async function collectMarkdownFiles(dir: string): Promise<string[]> {
 
 export function toWritingRoute(filePath: string, contentRoot: string): string | null {
   const relativePath = relative(contentRoot, filePath).replaceAll('\\', '/')
-  const withoutExtension = relativePath.replace(/\.md$/, '')
-
-  const segments = withoutExtension
-    .split('/')
-    .map((segment) => segment.replace(/^\d+\./, ''))
-    .filter(Boolean)
-
-  if (segments.some((segment) => segment.startsWith('_'))) {
-    return null
-  }
-
-  const slug = segments.join('/').replace(/\/index$/, '')
-  if (!slug) {
-    return null
-  }
-
-  return `${WRITING_BASE_PATH}/${slug}`
+  return fileRelativePathToWritingRoute(relativePath)
 }
 
 export async function getWritingContentEntries(contentRoot: string): Promise<WritingContentEntry[]> {
@@ -151,17 +139,24 @@ export async function getWritingContentEntries(contentRoot: string): Promise<Wri
   }
 
   const files = await collectMarkdownFiles(contentRoot)
-  const entries = await Promise.all(
-    files.map(async (filePath): Promise<WritingContentEntry | null> => {
-      const route = toWritingRoute(filePath, contentRoot)
-      if (!route) {
-        return null
-      }
+  const routeResolution = resolveWritingRouteCandidates(
+    files.map((filePath) => ({
+      sourcePath: filePath,
+      relativePath: relative(contentRoot, filePath),
+    })),
+  )
+  for (const collision of routeResolution.collisions) {
+    console.warn(
+      `[writing-route] Duplicate route "${collision.route}" detected. `
+      + `Keeping "${collision.keptSourcePath}" and skipping: ${collision.skippedSourcePaths.join(', ')}`,
+    )
+  }
 
-      const slug = route.slice(`${WRITING_BASE_PATH}/`.length)
-      const meta = await extractWritingMeta(filePath)
+  const entries = await Promise.all(
+    routeResolution.entries.map(async ({ sourcePath, route, slug }): Promise<WritingContentEntry> => {
+      const meta = await extractWritingMeta(sourcePath)
       return {
-        filePath,
+        filePath: sourcePath,
         route,
         slug,
         meta,
@@ -169,5 +164,5 @@ export async function getWritingContentEntries(contentRoot: string): Promise<Wri
     }),
   )
 
-  return entries.filter((entry): entry is WritingContentEntry => entry !== null)
+  return entries
 }

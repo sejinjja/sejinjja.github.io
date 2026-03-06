@@ -9,37 +9,52 @@ import {
   SEO_IMAGE_SCREENS,
   SITE_URL,
 } from './constants/seo'
-import { PRERENDER_STATIC_ROUTES } from './constants/routes'
+import {
+  FEED_ROUTE_PATH,
+  PRERENDER_STATIC_ROUTES,
+} from './constants/routes'
+import {
+  WRITING_FEED_AUTO_DISCOVERY_TITLE,
+  WRITING_FEED_AUTO_DISCOVERY_TYPE,
+} from './constants/writing'
+import {
+  resolveWritingRouteCandidates,
+  type WritingRouteCandidate,
+} from './utils/writingRoute'
 
-function collectWritingRoutes(dir: string, root: string): string[] {
+function collectWritingRouteCandidates(dir: string, root: string): WritingRouteCandidate[] {
   try {
-    return readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
-      const fullPath = resolve(dir, entry.name)
-      if (entry.isDirectory()) {
-        return collectWritingRoutes(fullPath, root)
-      }
-      if (!entry.isFile() || !entry.name.endsWith('.md')) {
-        return []
-      }
-      const segments = relative(root, fullPath)
-        .replaceAll('\\', '/')
-        .replace(/\.md$/, '')
-        .split('/')
-        .map((s) => s.replace(/^\d+\./, ''))
-        .filter(Boolean)
-      if (segments.some((s) => s.startsWith('_'))) {
-        return []
-      }
-      const slug = segments.join('/').replace(/\/index$/, '')
-      return slug ? [`/writing/${slug}`] : []
-    })
+    return readdirSync(dir, { withFileTypes: true })
+      .sort((a, b) => a.name.localeCompare(b.name))
+      .flatMap((entry): WritingRouteCandidate[] => {
+        const fullPath = resolve(dir, entry.name)
+        if (entry.isDirectory()) {
+          return collectWritingRouteCandidates(fullPath, root)
+        }
+        if (!entry.isFile() || !entry.name.endsWith('.md')) {
+          return []
+        }
+        return [{
+          sourcePath: fullPath,
+          relativePath: relative(root, fullPath),
+        }]
+      })
   } catch {
     return []
   }
 }
 
 const writingContentDir = resolve(process.cwd(), 'content', 'writing')
-const writingRoutes = collectWritingRoutes(writingContentDir, writingContentDir)
+const writingRouteResolution = resolveWritingRouteCandidates(
+  collectWritingRouteCandidates(writingContentDir, writingContentDir),
+)
+for (const collision of writingRouteResolution.collisions) {
+  console.warn(
+    `[writing-route] Duplicate route "${collision.route}" detected. `
+    + `Keeping "${collision.keptSourcePath}" and skipping: ${collision.skippedSourcePaths.join(', ')}`,
+  )
+}
+const writingRoutes = writingRouteResolution.routes
 
 export default defineNuxtConfig({
   devtools: { enabled: true },
@@ -92,6 +107,12 @@ export default defineNuxtConfig({
       link: [
         { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' },
         { rel: 'stylesheet', href: 'https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css' },
+        {
+          rel: 'alternate',
+          type: WRITING_FEED_AUTO_DISCOVERY_TYPE,
+          title: WRITING_FEED_AUTO_DISCOVERY_TITLE,
+          href: FEED_ROUTE_PATH,
+        },
       ],
     },
   },

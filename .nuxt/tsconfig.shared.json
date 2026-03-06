@@ -128,7 +128,7 @@
         "./mdc-imports"
       ],
       "#app-manifest": [
-        "./manifest/meta/64e940a9-a2c5-411e-b2cc-ef55ce9052bb.json"
+        "./manifest/meta/6930187c-96db-4da9-957c-16691bbfe9bd"
       ],
       "#build": [
         "."

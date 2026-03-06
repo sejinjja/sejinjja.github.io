@@ -34,7 +34,7 @@ function createPaginationPageRange(currentPage: number, totalPages: number): num
   const normalizedTotalPages = Math.max(1, totalPages)
   const halfWindowSize = Math.floor(WRITING_LIST_PAGINATION_WINDOW_SIZE / 2)
   let startPage = Math.max(1, currentPage - halfWindowSize)
-  let endPage = Math.min(normalizedTotalPages, startPage + WRITING_LIST_PAGINATION_WINDOW_SIZE - 1)
+  const endPage = Math.min(normalizedTotalPages, startPage + WRITING_LIST_PAGINATION_WINDOW_SIZE - 1)
 
   startPage = Math.max(1, endPage - WRITING_LIST_PAGINATION_WINDOW_SIZE + 1)
 

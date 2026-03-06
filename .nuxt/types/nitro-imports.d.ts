@@ -15,6 +15,7 @@ declare global {
   const callNodeListener: typeof import('../../node_modules/.pnpm/h3@1.15.5/node_modules/h3').callNodeListener
   const clearResponseHeaders: typeof import('../../node_modules/.pnpm/h3@1.15.5/node_modules/h3').clearResponseHeaders
   const clearSession: typeof import('../../node_modules/.pnpm/h3@1.15.5/node_modules/h3').clearSession
+  const collectMarkdownFiles: typeof import('../../server/utils/writingContent').collectMarkdownFiles
   const createApp: typeof import('../../node_modules/.pnpm/h3@1.15.5/node_modules/h3').createApp
   const createAppEventHandler: typeof import('../../node_modules/.pnpm/h3@1.15.5/node_modules/h3').createAppEventHandler
   const createError: typeof import('../../node_modules/.pnpm/h3@1.15.5/node_modules/h3').createError
@@ -40,7 +41,9 @@ declare global {
   const defineWebSocketHandler: typeof import('../../node_modules/.pnpm/h3@1.15.5/node_modules/h3').defineWebSocketHandler
   const deleteCookie: typeof import('../../node_modules/.pnpm/h3@1.15.5/node_modules/h3').deleteCookie
   const dynamicEventHandler: typeof import('../../node_modules/.pnpm/h3@1.15.5/node_modules/h3').dynamicEventHandler
+  const escapeXml: typeof import('../../server/utils/writingContent').escapeXml
   const eventHandler: typeof import('../../node_modules/.pnpm/h3@1.15.5/node_modules/h3').eventHandler
+  const extractWritingMeta: typeof import('../../server/utils/writingContent').extractWritingMeta
   const fetchWithEvent: typeof import('../../node_modules/.pnpm/h3@1.15.5/node_modules/h3').fetchWithEvent
   const fromNodeMiddleware: typeof import('../../node_modules/.pnpm/h3@1.15.5/node_modules/h3').fromNodeMiddleware
   const fromPlainHandler: typeof import('../../node_modules/.pnpm/h3@1.15.5/node_modules/h3').fromPlainHandler
@@ -70,6 +73,7 @@ declare global {
   const getSession: typeof import('../../node_modules/.pnpm/h3@1.15.5/node_modules/h3').getSession
   const getValidatedQuery: typeof import('../../node_modules/.pnpm/h3@1.15.5/node_modules/h3').getValidatedQuery
   const getValidatedRouterParams: typeof import('../../node_modules/.pnpm/h3@1.15.5/node_modules/h3').getValidatedRouterParams
+  const getWritingContentEntries: typeof import('../../server/utils/writingContent').getWritingContentEntries
   const handleCacheHeaders: typeof import('../../node_modules/.pnpm/h3@1.15.5/node_modules/h3').handleCacheHeaders
   const handleCors: typeof import('../../node_modules/.pnpm/h3@1.15.5/node_modules/h3').handleCors
   const isCorsOriginAllowed: typeof import('../../node_modules/.pnpm/h3@1.15.5/node_modules/h3').isCorsOriginAllowed
@@ -82,7 +86,10 @@ declare global {
   const isWebResponse: typeof import('../../node_modules/.pnpm/h3@1.15.5/node_modules/h3').isWebResponse
   const lazyEventHandler: typeof import('../../node_modules/.pnpm/h3@1.15.5/node_modules/h3').lazyEventHandler
   const nitroPlugin: typeof import('../../node_modules/.pnpm/nitropack@2.13.1_better-sqlite3@12.6.2/node_modules/nitropack/dist/runtime/internal/plugin').nitroPlugin
+  const normalizeSiteUrl: typeof import('../../server/utils/writingContent').normalizeSiteUrl
   const parseCookies: typeof import('../../node_modules/.pnpm/h3@1.15.5/node_modules/h3').parseCookies
+  const parseDateToIso: typeof import('../../server/utils/writingContent').parseDateToIso
+  const parseDateToUtc: typeof import('../../server/utils/writingContent').parseDateToUtc
   const parseMarkdown: typeof import('../../node_modules/.pnpm/@nuxtjs+mdc@0.20.1_magicast@0.5.2/node_modules/@nuxtjs/mdc/dist/runtime/parser').parseMarkdown
   const promisifyNodeListener: typeof import('../../node_modules/.pnpm/h3@1.15.5/node_modules/h3').promisifyNodeListener
   const proxyRequest: typeof import('../../node_modules/.pnpm/h3@1.15.5/node_modules/h3').proxyRequest
@@ -122,6 +129,7 @@ declare global {
   const toPlainHandler: typeof import('../../node_modules/.pnpm/h3@1.15.5/node_modules/h3').toPlainHandler
   const toWebHandler: typeof import('../../node_modules/.pnpm/h3@1.15.5/node_modules/h3').toWebHandler
   const toWebRequest: typeof import('../../node_modules/.pnpm/h3@1.15.5/node_modules/h3').toWebRequest
+  const toWritingRoute: typeof import('../../server/utils/writingContent').toWritingRoute
   const unsealSession: typeof import('../../node_modules/.pnpm/h3@1.15.5/node_modules/h3').unsealSession
   const updateSession: typeof import('../../node_modules/.pnpm/h3@1.15.5/node_modules/h3').updateSession
   const useAppConfig: typeof import('../../node_modules/.pnpm/nitropack@2.13.1_better-sqlite3@12.6.2/node_modules/nitropack/dist/runtime/internal/config').useAppConfig
@@ -139,6 +147,9 @@ declare global {
   // @ts-ignore
   export type { EventHandler, EventHandlerRequest, EventHandlerResponse, EventHandlerObject, H3EventContext } from '../../node_modules/.pnpm/h3@1.15.5/node_modules/h3'
   import('../../node_modules/.pnpm/h3@1.15.5/node_modules/h3')
+  // @ts-ignore
+  export type { WritingMeta, WritingContentEntry, RouteEntry } from '../../server/utils/writingContent'
+  import('../../server/utils/writingContent')
 }
 export { H3Event, H3Error, appendCorsHeaders, appendCorsPreflightHeaders, appendHeader, appendHeaders, appendResponseHeader, appendResponseHeaders, assertMethod, callNodeListener, clearResponseHeaders, clearSession, createApp, createAppEventHandler, createError, createEvent, createEventStream, createRouter, defaultContentType, defineEventHandler, defineLazyEventHandler, defineNodeListener, defineNodeMiddleware, defineRequestMiddleware, defineResponseMiddleware, defineWebSocket, defineWebSocketHandler, deleteCookie, dynamicEventHandler, eventHandler, fetchWithEvent, fromNodeMiddleware, fromPlainHandler, fromWebHandler, getCookie, getHeader, getHeaders, getMethod, getProxyRequestHeaders, getQuery, getRequestFingerprint, getRequestHeader, getRequestHeaders, getRequestHost, getRequestIP, getRequestPath, getRequestProtocol, getRequestURL, getRequestWebStream, getResponseHeader, getResponseHeaders, getResponseStatus, getResponseStatusText, getRouterParam, getRouterParams, getSession, getValidatedQuery, getValidatedRouterParams, handleCacheHeaders, handleCors, isCorsOriginAllowed, isError, isEvent, isEventHandler, isMethod, isPreflightRequest, isStream, isWebResponse, lazyEventHandler, parseCookies, promisifyNodeListener, proxyRequest, readBody, readFormData, readMultipartFormData, readRawBody, readValidatedBody, removeResponseHeader, sanitizeStatusCode, sanitizeStatusMessage, sealSession, send, sendError, sendIterable, sendNoContent, sendProxy, sendRedirect, sendStream, sendWebResponse, serveStatic, setCookie, setHeader, setHeaders, setResponseHeader, setResponseHeaders, setResponseStatus, splitCookiesString, toEventHandler, toNodeListener, toPlainHandler, toWebHandler, toWebRequest, unsealSession, updateSession, useBase, useSession, writeEarlyHints } from 'h3';
 export { useNitroApp } from 'nitropack/runtime/internal/app';
@@ -158,3 +169,4 @@ export { queryCollection, queryCollectionSearchSections, queryCollectionNavigati
 export { useImage } from 'C:/Users/sejiwork/subProject/sejinjja.github.io/node_modules/.pnpm/@nuxt+image@2.0.0_db0@0.3.4_better-sqlite3@12.6.2__ioredis@5.9.2_magicast@0.5.2/node_modules/@nuxt/image/dist/runtime/server/utils/image';
 export { parseMarkdown } from 'C:/Users/sejiwork/subProject/sejinjja.github.io/node_modules/.pnpm/@nuxtjs+mdc@0.20.1_magicast@0.5.2/node_modules/@nuxtjs/mdc/dist/runtime/parser';
 export { stringifyMarkdown } from 'C:/Users/sejiwork/subProject/sejinjja.github.io/node_modules/.pnpm/@nuxtjs+mdc@0.20.1_magicast@0.5.2/node_modules/@nuxtjs/mdc/dist/runtime/stringify';
+export { normalizeSiteUrl, escapeXml, parseDateToIso, parseDateToUtc, extractWritingMeta, collectMarkdownFiles, toWritingRoute, getWritingContentEntries } from 'C:/Users/sejiwork/subProject/sejinjja.github.io/server/utils/writingContent';

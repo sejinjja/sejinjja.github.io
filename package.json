@@ -10,7 +10,8 @@
     "notion:sync": "node scripts/notion-sync.mjs",
     "typecheck": "nuxi typecheck",
     "test": "pnpm test:unit",
-    "test:unit": "vitest run",
+    "test:unit": "vitest run --exclude tests/smoke/**",
+    "test:smoke": "vitest run tests/smoke/prerender-generate.spec.ts",
     "ci": "pnpm typecheck && pnpm generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare"

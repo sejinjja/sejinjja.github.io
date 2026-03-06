@@ -2,12 +2,12 @@
   <header class="sticky top-0 z-50 bg-white/90 dark:bg-gray-950/90 backdrop-blur-sm border-b border-gray-100 dark:border-gray-800">
     <nav class="max-w-5xl mx-auto px-6 h-16 flex items-center justify-between" aria-label="주요 메뉴">
       <NuxtLink
-        to="/"
+        :to="HEADER_BRAND_TO"
         class="text-xl font-bold text-gray-900 dark:text-gray-100 hover:text-primary-600 dark:hover:text-primary-300 transition-colors"
-        aria-label="홈으로 이동"
+        :aria-label="HEADER_BRAND_ARIA_LABEL"
         @click="closeMenu"
       >
-        조세진
+        {{ HEADER_BRAND_LABEL }}
       </NuxtLink>
 
       <!-- Desktop Nav -->
@@ -36,7 +36,7 @@
         <button
           type="button"
           class="p-2 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100"
-          :aria-label="isMenuOpen ? '메뉴 닫기' : '메뉴 열기'"
+          :aria-label="isMenuOpen ? HEADER_MENU_CLOSE_LABEL : HEADER_MENU_OPEN_LABEL"
           :aria-expanded="isMenuOpen"
           aria-controls="mobile-nav"
           @click="toggleMenu"
@@ -60,7 +60,7 @@
         id="mobile-nav"
         class="md:hidden border-b border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-950"
         role="navigation"
-        aria-label="모바일 메뉴"
+        :aria-label="HEADER_MOBILE_NAV_ARIA_LABEL"
       >
         <ul class="px-6 py-4 space-y-3">
           <li v-for="item in navItems" :key="item.to">
@@ -83,16 +83,20 @@
 import { onBeforeUnmount, watch } from 'vue'
 import { useRoute } from '#imports'
 import { useNavigation } from '~/composables/useNavigation'
+import {
+  HEADER_BRAND_ARIA_LABEL,
+  HEADER_BRAND_LABEL,
+  HEADER_BRAND_TO,
+  HEADER_MENU_CLOSE_LABEL,
+  HEADER_MENU_OPEN_LABEL,
+  HEADER_MOBILE_NAV_ARIA_LABEL,
+  HEADER_NAV_ITEMS,
+} from '~/constants/navigation'
 
 const { isMenuOpen, toggleMenu, closeMenu } = useNavigation()
 const route = useRoute()
 
-const navItems = [
-  { to: '/', label: '홈' },
-  { to: '/about', label: '소개' },
-  { to: '/projects', label: '프로젝트' },
-  { to: '/writing', label: '글' },
-]
+const navItems = HEADER_NAV_ITEMS
 
 function handleWindowKeydown(event: KeyboardEvent) {
   if (event.key === 'Escape') {

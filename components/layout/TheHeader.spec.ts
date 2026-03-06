@@ -2,6 +2,11 @@ import { nextTick, ref } from 'vue'
 import { mount } from '@vue/test-utils'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import TheHeader from './TheHeader.vue'
+import {
+  HEADER_MENU_OPEN_LABEL,
+  HEADER_NAV_ITEMS,
+} from '~/constants/navigation'
+import { WORK_SCHEDULE_MANAGER_ROUTE_PATH } from '~/constants/workScheduleManager'
 
 const routePath = ref('/')
 const isMenuOpen = ref(false)
@@ -91,5 +96,22 @@ describe('TheHeader', () => {
     await nextTick()
 
     expect(closeMenu).not.toHaveBeenCalled()
+  })
+
+  it('renders navigation items from header constants including work schedule manager route', () => {
+    const wrapper = mountHeader()
+
+    for (const item of HEADER_NAV_ITEMS) {
+      expect(wrapper.findAll(`a[href="${item.to}"]`).length).toBeGreaterThan(0)
+    }
+
+    expect(wrapper.find(`a[href="${WORK_SCHEDULE_MANAGER_ROUTE_PATH}"]`).text()).toBeTruthy()
+  })
+
+  it('uses menu aria labels from constants', () => {
+    const wrapper = mountHeader()
+    const menuButton = wrapper.find('button[aria-controls="mobile-nav"]')
+
+    expect(menuButton.attributes('aria-label')).toBe(HEADER_MENU_OPEN_LABEL)
   })
 })

@@ -4,7 +4,7 @@ import {
   SEO_JSON_LD_TYPE_PERSON,
   SITE_OWNER_NAME,
   SITE_URL,
-} from '~/constants/seo'
+} from './seo'
 
 export const WRITING_CONTENT_COLLECTION = 'content'
 
@@ -45,6 +45,8 @@ export const WRITING_LIST_TITLE = '글'
 export const WRITING_LIST_SUBTITLE = '실무에서 부딪힌 문제와 해결 과정을 기록합니다.'
 export const WRITING_LIST_META_DESCRIPTION = '실무에서 부딪힌 문제, 해결 과정, 개발 인사이트를 기록한 기술 글 목록입니다.'
 export const WRITING_LIST_OG_TITLE = `${WRITING_LIST_TITLE} | ${SITE_OWNER_NAME}`
+export const WRITING_FEED_CHANNEL_TITLE = `${SITE_OWNER_NAME} | ${WRITING_LIST_TITLE}`
+export const WRITING_FEED_CHANNEL_DESCRIPTION = WRITING_LIST_SUBTITLE
 export const WRITING_LIST_ENABLE_FACETED_NOINDEX = false
 export const WRITING_DETAIL_BACK_LINK_LABEL = '글 목록으로'
 export const WRITING_DETAIL_FALLBACK_TITLE = WRITING_LIST_TITLE

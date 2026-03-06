@@ -13,6 +13,7 @@ function readSource(relativePath: string): string {
 const HOME_PAGE_SOURCE = readSource('pages/index.vue')
 const ABOUT_PAGE_SOURCE = readSource('pages/about.vue')
 const PROJECTS_PAGE_SOURCE = readSource('pages/projects.vue')
+const WORK_SCHEDULE_MANAGER_PAGE_SOURCE = readSource('pages/work-schedule-manager.vue')
 
 describe('page content constants', () => {
   it('uses home constants for homepage seo metadata', () => {
@@ -41,5 +42,16 @@ describe('page content constants', () => {
     expect(PROJECTS_PAGE_SOURCE).toContain('PROJECTS_PAGE_OG_TITLE')
     expect(PROJECTS_PAGE_SOURCE).toContain('PROJECTS_ITEMS')
     expect(PROJECTS_PAGE_SOURCE).not.toContain("'ls-diff'")
+  })
+
+  it('uses work schedule manager constants for page copy and seo metadata', () => {
+    expect(WORK_SCHEDULE_MANAGER_PAGE_SOURCE).toContain("from '~/constants/workScheduleManager'")
+    expect(WORK_SCHEDULE_MANAGER_PAGE_SOURCE).toContain('WORK_SCHEDULE_MANAGER_PAGE_TITLE')
+    expect(WORK_SCHEDULE_MANAGER_PAGE_SOURCE).toContain('WORK_SCHEDULE_MANAGER_PAGE_LEAD')
+    expect(WORK_SCHEDULE_MANAGER_PAGE_SOURCE).toContain('WORK_SCHEDULE_MANAGER_IFRAME_SRC')
+    expect(WORK_SCHEDULE_MANAGER_PAGE_SOURCE).toContain('WORK_SCHEDULE_MANAGER_IFRAME_TITLE')
+    expect(WORK_SCHEDULE_MANAGER_PAGE_SOURCE).toContain('WORK_SCHEDULE_MANAGER_PAGE_META_DESCRIPTION')
+    expect(WORK_SCHEDULE_MANAGER_PAGE_SOURCE).toContain('WORK_SCHEDULE_MANAGER_PAGE_OG_TITLE')
+    expect(WORK_SCHEDULE_MANAGER_PAGE_SOURCE).not.toContain("title: '근무 스케줄 관리'")
   })
 })

@@ -1,6 +1,3 @@
-import { existsSync, readFileSync } from 'node:fs'
-import { resolve } from 'node:path'
-import { execSync } from 'node:child_process'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import {
   WRITING_CONTENT_COLLECTION,
@@ -50,10 +47,6 @@ vi.stubGlobal('defineEventHandler', defineEventHandlerMock)
 vi.stubGlobal('queryCollection', queryCollectionMock)
 vi.stubGlobal('getValidatedQuery', getValidatedQueryMock)
 vi.stubGlobal('createError', createErrorMock)
-
-const ROOT_DIR = process.cwd()
-const WRITING_INDEX_OUTPUT_PATH = resolve(ROOT_DIR, '.output/public/writing/index.html')
-const PRERENDER_TIMEOUT_MS = 240_000
 
 function createListQueryBuilder(items: unknown[]): ListQueryBuilder {
   const builder = {
@@ -255,41 +248,4 @@ describe('server/api/writing/list.get', () => {
     })
     expect(createErrorMock).toHaveBeenCalled()
   })
-
-  it('prerender smoke: writing payload does not contain NuxtError', () => {
-    try {
-      execSync(
-        'pnpm generate',
-        {
-          cwd: ROOT_DIR,
-          encoding: 'utf-8',
-          env: {
-            ...process.env,
-            NUXT_TELEMETRY_DISABLED: '1',
-          },
-          maxBuffer: 20 * 1024 * 1024,
-        },
-      )
-    } catch (error) {
-      const { stdout, stderr } = error as {
-        stdout?: string
-        stderr?: string
-      }
-
-      throw new Error([
-        'pnpm generate failed during prerender smoke test.',
-        `stdout:\n${stdout || '(empty)'}`,
-        `stderr:\n${stderr || '(empty)'}`,
-      ].join('\n'))
-    }
-
-    expect(existsSync(WRITING_INDEX_OUTPUT_PATH)).toBe(true)
-
-    const payload = readFileSync(WRITING_INDEX_OUTPUT_PATH, 'utf-8')
-
-    expect(payload).toContain('__NUXT_DATA__')
-    expect(payload).not.toContain('500 Server Error')
-    expect(payload).not.toContain('Cannot read properties of undefined (reading \'req\')')
-    expect(payload).not.toContain('NuxtError')
-  }, PRERENDER_TIMEOUT_MS)
 })

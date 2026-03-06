@@ -9,6 +9,7 @@ import {
   SEO_IMAGE_SCREENS,
   SITE_URL,
 } from './constants/seo'
+import { PRERENDER_STATIC_ROUTES } from './constants/routes'
 
 const writingContentDir = resolve(process.cwd(), 'content', 'writing')
 const writingRoutes = (() => {
@@ -29,7 +30,7 @@ export default defineNuxtConfig({
     preset: 'github-pages',
     prerender: {
       crawlLinks: false,
-      routes: ['/', '/about', '/projects', '/writing', '/sitemap.xml', '/feed.xml', ...writingRoutes],
+      routes: [...PRERENDER_STATIC_ROUTES, ...writingRoutes],
     },
   },
 

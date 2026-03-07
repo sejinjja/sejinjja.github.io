@@ -36,8 +36,11 @@ describe('auto-merge workflow', () => {
     expect(source).toContain('contents: write')
     expect(source).toContain('pull-requests: write')
     expect(source).toContain("github.event.pull_request.draft == false")
-    expect(source).toContain("github.event.pull_request.user.login == 'dependabot[bot]'")
-    expect(source).toContain('contains(github.event.pull_request.labels.*.name, env.AUTO_MERGE_LABEL)')
+    expect(source).toContain("PR_AUTHOR: ${{ github.event.pull_request.user.login }}")
+    expect(source).toContain("PR_LABELS: ${{ join(github.event.pull_request.labels.*.name, ',') }}")
+    expect(source).toContain('"$PR_AUTHOR" == "dependabot[bot]"')
+    expect(source).toContain('",$PR_LABELS," == *",$AUTO_MERGE_LABEL,"*')
+    expect(source).toContain("steps.eligibility.outputs.should_enable == 'true'")
   })
 
   it('uses GitHub CLI with workflow-managed environment variables', () => {

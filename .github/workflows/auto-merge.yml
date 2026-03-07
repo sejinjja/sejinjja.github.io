@@ -1,0 +1,45 @@
+name: Auto Merge
+
+on:
+  pull_request_target:
+    types:
+      - opened
+      - reopened
+      - synchronize
+      - labeled
+      - ready_for_review
+
+env:
+  AUTO_MERGE_LABEL: automerge
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  enable-auto-merge:
+    if: >
+      github.event.pull_request.state == 'open' &&
+      github.event.pull_request.draft == false &&
+      (
+        github.event.pull_request.user.login == 'dependabot[bot]' ||
+        contains(github.event.pull_request.labels.*.name, env.AUTO_MERGE_LABEL)
+      )
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      PR_URL: ${{ github.event.pull_request.html_url }}
+    steps:
+      - name: Inspect PR metadata
+        run: |
+          gh pr view "$PR_URL" --json number,author,labels,isDraft,mergeStateStatus,reviewDecision \
+            --jq '"PR #\(.number) | author=\(.author.login) | labels=\([.labels[].name] | join(",")) | draft=\(.isDraft) | mergeState=\(.mergeStateStatus) | reviewDecision=\(.reviewDecision)"'
+
+      - name: Enable PR auto-merge
+        run: gh pr merge --auto --squash "$PR_URL"
+
+      - name: Explain repository prerequisite on failure
+        if: failure()
+        run: |
+          echo "::error::Auto-merge could not be enabled. Confirm Settings > General > Allow auto-merge is enabled for this repository and that branch protection requirements are satisfied."

@@ -36,7 +36,7 @@
     "notion-to-md": "^3.1.1",
     "tailwindcss": "^3.4.19",
     "typescript": "^5.7.0",
-    "vitest": "^4.0.18"
+    "vitest": "^4.1.0"
   },
   "pnpm": {
     "overrides": {

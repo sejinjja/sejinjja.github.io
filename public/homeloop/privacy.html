@@ -23,6 +23,7 @@ body{max-width:48rem;margin:2rem auto;padding:0 1.25rem;color:#222;font:1rem/1.7
 <section>
 <h2>2. Google Play 구매 처리</h2>
 <p>일회성 Pro 구매·구매 복원·소유권 확인은 Google Play를 통해 처리되며 인터넷 연결이 필요합니다. Google Play는 자신의 정책에 따라 계정·결제·거래 관련 정보를 처리합니다. 앱은 구매 상품·구매 토큰과 확인된 권한 상태를 기기에 별도 저장하여 권한 확인과 승인 재시도에 사용합니다. 이 구매 캐시는 생활 자료 DB 및 수동 백업과 분리되며, 앱이 카드 번호나 결제 비밀번호를 입력받거나 저장하지 않습니다. Google Play와 결제 SDK를 통한 정보 처리는 Google의 개인정보처리방침(https://policies.google.com/privacy)과 Google Play 약관(https://play.google.com/about/play-terms/)도 적용됩니다.</p>
+<p>Google Play 결제 SDK에는 결제 연결·응답·오류에 관한 진단 정보와 앱·SDK 버전, 기기 모델·운영체제·언어·국가 설정·네트워크 유형 등의 기술 정보를 Google로 전송하는 기능이 포함되어 있습니다. 앱 시작 시 결제 연결을 초기화하므로 구매를 선택하기 전에도 진단 전송이 발생할 수 있습니다. 이 앱은 해당 SDK 진단 전송을 끄는 별도 설정을 제공하지 않습니다. 진단 정보는 생활 기록과 구분되며, Google의 정보 처리에는 위 개인정보처리방침이 적용됩니다.</p>
 </section>
 <section>
 <h2>3. 사용자가 선택하는 외부 연결</h2>
@@ -31,6 +32,7 @@ body{max-width:48rem;margin:2rem auto;padding:0 1.25rem;color:#222;font:1rem/1.7
 <section>
 <h2>4. 보유와 삭제</h2>
 <p>생활 자료는 사용자가 보관하는 동안 기기에 남으며 항목·제품 영구 삭제 또는 설정의 집안 데이터 전체 삭제로 지울 수 있습니다. 보관함으로 옮기는 것은 영구 삭제가 아닙니다. 삭제 정리가 끝나지 않았다는 안내가 있으면 정리 재시도를 완료해 주세요. 앱 삭제로 기기 안의 앱 자료와 구매 캐시는 제거되지만 Google Play의 구매 내역 자체가 취소되지는 않습니다. 구매 관련 보유·삭제와 환불은 Google Play의 정책을 따릅니다.</p>
+<p>앱의 집안 데이터 전체 삭제는 Google에 이미 전송된 SDK 진단 정보의 삭제를 요청하는 기능이 아닙니다. Google이 처리하는 자료의 보유·삭제는 Google의 정책과 관련 요청 절차를 따릅니다.</p>
 </section>
 <section>
 <h2>5. 백업과 복구 한계</h2>
